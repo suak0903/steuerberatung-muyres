@@ -245,7 +245,7 @@ p{margin:0 0 1.1rem}
   display:flex; align-items:flex-end; min-height:480px; padding:calc(var(--nav-h) + 40px) 0 56px}
 .subhero::after{content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
 .subhero .container{position:relative; z-index:1; width:100%}
-.subhero__fg{display:flex; flex-wrap:wrap; align-items:center; gap:8px 0; margin-top:26px; font-size:.76rem; text-transform:uppercase; letter-spacing:.13em; font-weight:600}
+.subhero__fg{display:flex; flex-wrap:wrap; align-items:center; gap:6px 0; margin:4px 0 16px; font-size:.74rem; text-transform:uppercase; letter-spacing:.13em; font-weight:600}
 .subhero__fg a{color:rgba(255,255,255,.74); padding:0 18px; position:relative; transition:color .2s var(--ease)}
 .subhero__fg a:first-child{padding-left:0}
 .subhero__fg a:hover{color:#fff}

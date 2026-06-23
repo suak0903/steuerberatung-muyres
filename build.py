@@ -10,7 +10,7 @@ import os, io
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "35"
+VER = "36"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -131,10 +131,10 @@ def subhero(crumb, title, lead, bg=None, extra=''):
     style = (' style="background-image:url(media/header/' + bg + '.webp)"') if bg else ''
     c = '<section class="subhero"' + style + '>\n  <div class="container">\n'
     c += '    <p class="crumb"><a href="index.html">Start</a> &nbsp;/&nbsp; ' + crumb + '</p>\n'
+    c += extra
     c += '    <h1>' + title + '</h1>\n'
     if lead:
         c += '    <p>' + lead + '</p>\n'
-    c += extra
     c += '  </div>\n</section>\n'
     return c
 
