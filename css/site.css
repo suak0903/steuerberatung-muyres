@@ -241,11 +241,39 @@ p{margin:0 0 1.1rem}
 .footer__bottom a{color:rgba(255,255,255,.64)}
 
 /* ---------- Subpage hero ---------- */
-.subhero{background:var(--navy); color:#fff; padding-block:calc(var(--nav-h) + 40px) 64px}
-.subhero .crumb{font-size:.84rem; color:rgba(255,255,255,.56); margin-bottom:16px}
-.subhero .crumb a{color:rgba(255,255,255,.7)}
+.subhero{position:relative; overflow:hidden; isolation:isolate; background:var(--navy) center/cover no-repeat; color:#fff; padding-block:calc(var(--nav-h) + 44px) 70px}
+.subhero::after{content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
+.subhero .container{position:relative; z-index:1}
+.subhero .crumb{font-size:.84rem; color:rgba(255,255,255,.62); margin-bottom:16px}
+.subhero .crumb a{color:rgba(255,255,255,.78)}
 .subhero h1{color:#fff; font-size:clamp(2.1rem,1.3rem + 2.8vw,3.2rem)}
-.subhero p{color:rgba(255,255,255,.74); max-width:56ch; margin-top:18px; font-size:1.12rem; font-weight:300}
+.subhero p{color:rgba(255,255,255,.82); max-width:56ch; margin-top:18px; font-size:1.12rem; font-weight:300}
+
+/* Helle Schluss-Variante des CTA-Bands (vor dem navy Footer) */
+.ctaband--light{background:var(--stone)}
+.ctaband--light .eyebrow{color:var(--bordeaux)}
+.ctaband--light h2,.ctaband--light .h2{color:var(--navy)}
+.ctaband--light .lead{color:var(--muted)}
+.ctaband--light .btn--ghost{color:var(--navy); border-color:var(--line)}
+.ctaband--light .btn--ghost:hover{background:transparent; border-color:var(--navy); color:var(--navy)}
+
+/* Partner / Mitgliedschaften */
+.partners{display:grid; grid-template-columns:repeat(4,1fr); gap:32px; align-items:center}
+.partners figure{margin:0; display:flex; align-items:center; justify-content:center; min-height:96px}
+.partners img{max-width:100%; max-height:88px; width:auto; object-fit:contain}
+@media(max-width:760px){.partners{grid-template-columns:1fr 1fr; gap:24px}}
+
+/* Kontakt-Icons in Bordeaux (Mask-Technik) */
+.cic{display:inline-block; width:22px; height:22px; flex:0 0 22px; background:var(--bordeaux);
+  -webkit-mask-image:var(--m); mask-image:var(--m);
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center; mask-position:center;
+  -webkit-mask-size:contain; mask-size:contain}
+
+/* Google-Maps (Kontakt, unten) */
+.mapwrap{margin-top:0}
+.mapwrap iframe{display:block; width:100%; height:420px; border:0; filter:grayscale(.2) contrast(1.02)}
+@media(max-width:760px){.mapwrap iframe{height:320px}}
 
 /* ---------- Cookie-Banner (halbtransparent, Muyres-Farben) ---------- */
 .cookie{position:fixed; left:16px; right:16px; bottom:16px; z-index:96; max-width:760px; margin-inline:auto;

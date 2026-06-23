@@ -10,7 +10,7 @@ import os, io
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "29"
+VER = "33"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -29,8 +29,9 @@ JSONLD = ('<script type="application/ld+json">{"@context":"https://schema.org",'
           '"openingHours":["Mo-Th 08:30-12:30","Mo-Th 13:30-16:30","Fr 08:30-13:00"]}</script>') % (ORIG, ORIG, ORIG)
 
 
-def head(title, desc, slug):
+def head(title, desc, slug, og="muyres"):
     canon = ORIG + "/" + (slug + "/" if slug else "")
+    ogimg = PAGES + "/media/og-" + og + ".jpg"
     return (
         '<!doctype html>\n<html lang="de" class="no-js">\n<head>\n'
         '<meta charset="utf-8">\n'
@@ -48,13 +49,13 @@ def head(title, desc, slug):
         '<meta property="og:title" content="' + title + ' | Steuerberatung Muyres">\n'
         '<meta property="og:description" content="' + desc + '">\n'
         '<meta property="og:url" content="' + canon + '">\n'
-        '<meta property="og:image" content="' + PAGES + '/media/og-muyres.jpg">\n'
+        '<meta property="og:image" content="' + ogimg + '">\n'
         '<meta property="og:image:width" content="1200">\n'
         '<meta property="og:image:height" content="630">\n'
         '<meta name="twitter:card" content="summary_large_image">\n'
         '<meta name="twitter:title" content="' + title + ' | Steuerberatung Muyres">\n'
         '<meta name="twitter:description" content="' + desc + '">\n'
-        '<meta name="twitter:image" content="' + PAGES + '/media/og-muyres.jpg">\n'
+        '<meta name="twitter:image" content="' + ogimg + '">\n'
         + JSONLD + '\n'
         '<script>document.documentElement.className=document.documentElement.className.replace(\'no-js\',\'has-js\');</script>\n'
         '<link rel="preload" href="font/archivo-700.woff2" as="font" type="font/woff2" crossorigin>\n'
@@ -126,8 +127,9 @@ TAIL = (
 '<script src="js/site.js?v=' + VER + '"></script>\n</body>\n</html>\n')
 
 
-def subhero(crumb, title, lead):
-    c = '<section class="subhero">\n  <div class="container">\n'
+def subhero(crumb, title, lead, bg=None):
+    style = (' style="background-image:url(media/header/' + bg + '.webp)"') if bg else ''
+    c = '<section class="subhero"' + style + '>\n  <div class="container">\n'
     c += '    <p class="crumb"><a href="index.html">Start</a> &nbsp;/&nbsp; ' + crumb + '</p>\n'
     c += '    <h1>' + title + '</h1>\n'
     if lead:
@@ -136,14 +138,16 @@ def subhero(crumb, title, lead):
     return c
 
 
-def cta_band():
+def cta_band(light=True):
+    sec = "section--mist" if light else "section--navy"
+    sec2 = "btn--outline" if light else "btn--ghost"
     return (
-'  <section class="section section--navy">\n    <div class="container">\n      <div class="ctaband">\n'
+'  <section class="section ' + sec + '">\n    <div class="container">\n      <div class="ctaband">\n'
 '        <div class="reveal">\n          <p class="eyebrow">Kostenfreies Erstgespraech</p>\n'
 '          <h2 class="h2">Wir freuen uns auf Sie.</h2>\n'
 '          <p class="lead">Melden Sie sich gleich bei uns und vereinbaren Sie ein kostenfreies Erstgespraech als Telefonberatung, Onlinecoaching oder persoenlichen Termin vor Ort.</p>\n        </div>\n'
 '        <div class="ctaband__actions reveal">\n          <a class="btn btn--primary" href="tel:+4921614950780">02161 / 49 50 78 - 0</a>\n'
-'          <a class="btn btn--ghost" href="kontakt.html">Termin anfragen</a>\n        </div>\n      </div>\n    </div>\n  </section>\n')
+'          <a class="btn ' + sec2 + '" href="kontakt.html">Termin anfragen</a>\n        </div>\n      </div>\n    </div>\n  </section>\n')
 
 
 def zitat(text):
@@ -171,8 +175,8 @@ def pledges_section():
 '        <div class="pledge"><h3>Service ueber den Tellerrand hinaus</h3></div>\n      </div>\n    </div>\n  </section>\n')
 
 
-def write(slug, title, desc, active, body):
-    full = head(title, desc, slug if slug != "index" else "") + nav(active) + body + '\n</main>\n\n' + FOOTER + TAIL
+def write(slug, title, desc, active, body, og="muyres"):
+    full = head(title, desc, slug if slug != "index" else "", og) + nav(active) + body + '\n</main>\n\n' + FOOTER + TAIL
     path = os.path.join(PROJ, slug + ".html")
     with io.open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(full)
@@ -200,15 +204,15 @@ FG = {
 FG_ICON = {"unternehmen":"icon-unternehmen","privatpersonen":"icon-privatpersonen","existenzgruender":"icon-startups","freiberufler":"icon-freelancer","immobilienbesitzer":"icon-immobilienbesitzer"}
 
 for key,(t,desc,lead,items) in FG.items():
-    body = subhero('<a href="fachgebiete.html">Fachgebiete</a> &nbsp;/&nbsp; ' + t, "Steuerberater fuer " + t, lead)
+    body = subhero('<a href="fachgebiete.html">Fachgebiete</a> &nbsp;/&nbsp; ' + t, "Steuerberater fuer " + t, lead, "fachgebiete-" + key)
     body += leistungen("Beispiele aus unserem Leistungsspektrum.", items)
     body += pledges_section()
     body += cta_band()
-    write("fachgebiete-" + key, "Steuerberater " + t, desc, "fachgebiete", body)
+    write("fachgebiete-" + key, "Steuerberater " + t, desc, "fachgebiete", body, "fachgebiete-" + key)
 
 # Fachgebiete-Uebersicht
 ov = subhero("Fachgebiete", "Wir verstehen uns als Partner an Ihrer Seite.",
-   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.")
+   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.", "kanzlei")
 ov += '  <section class="section">\n    <div class="container">\n      <div class="fields fields--5 stagger reveal">\n'
 FG_ORDER = [("unternehmen","Unternehmen"),("privatpersonen","Privatpersonen"),("existenzgruender","Existenzgruender & Startups"),("freiberufler","Freiberufler & Freelancer"),("immobilienbesitzer","Immobilienbesitzer")]
 for key,label in FG_ORDER:
@@ -218,7 +222,7 @@ for key,label in FG_ORDER:
            '          <span class="field__more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>\n        </a>\n')
 ov += '      </div>\n    </div>\n  </section>\n'
 ov += cta_band()
-write("fachgebiete", "Fachgebiete", "Unsere Fachgebiete: Steuerberatung fuer Unternehmen, Privatpersonen, Existenzgruender, Freiberufler und Immobilienbesitzer in Moenchengladbach.", "fachgebiete", ov)
+write("fachgebiete", "Fachgebiete", "Unsere Fachgebiete: Steuerberatung fuer Unternehmen, Privatpersonen, Existenzgruender, Freiberufler und Immobilienbesitzer in Moenchengladbach.", "fachgebiete", ov, "kanzlei")
 
 # ---------------- Kanzlei (mit Team) ----------------
 TEAM = [
@@ -230,13 +234,14 @@ TEAM = [
  ("5-muyres-steuerberatung-team-fr-rautenberger", "Ulrike Rautenberger", "Steuerfachwirtin, Bilanzbuchhalterin"),
 ]
 kb = subhero("Kanzlei", "Unser Steuerbüro.",
-   "Gegründet 2020 von Michael Muyres, liegt unsere Steuerkanzlei heute direkt am Bunten Garten an der Beethovenstraße. Als moderne Kanzlei sind wir das Bindeglied zwischen klassischer Steuerberatung und aktuellen Steuerthemen.")
+   "Gegründet 2020 von Michael Muyres, liegt unsere Steuerkanzlei heute direkt am Bunten Garten an der Beethovenstraße. Als moderne Kanzlei sind wir das Bindeglied zwischen klassischer Steuerberatung und aktuellen Steuerthemen.", "kanzlei")
 # Werdegang (Foto + Text)
 kb += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="split">\n'
 '        <div class="split__media reveal"><img src="media/team/muyres-steuerberatung-michael-muyres-randlos.webp" alt="Michael Muyres, Steuerberater"></div>\n'
 '        <div class="prose reveal">\n          <p class="eyebrow">Michael Muyres</p>\n          <h2 class="h2">Mein Weg zur Steuerberatung.</h2>\n'
-'          <p>Geprägt von der Arbeit meines Vaters entschloss ich mich früh für den Beruf des Steuerberaters. Nach Ausbildung und berufsbegleitendem Studium war ich in einer renommierten Wirtschaftspruefungsgesellschaft aus dem Profisportbereich taetig, in der ich 2019 zum Prokuristen bestellt wurde.</p>\n'
-'          <p>Vor einigen Jahren habe ich den naechsten Schritt getan und mich mit meiner eigenen Steuerkanzlei in meiner Heimatstadt Moenchengladbach selbststaendig gemacht. Durch meine ueber 15-jaehrige Erfahrung bieten mein Team und ich Ihnen heute professionelle Steuerberatung, so individuell wie Sie.</p>\n        </div>\n      </div>\n    </div>\n  </section>\n')
+'          <p>Mein Weg zur Steuerberatung führte über Umwege: 2003 startete ich meine berufliche Laufbahn bei einer namhaften Krankenkasse in Düsseldorf, merkte jedoch früh, dass mich der Bereich der gesetzlichen Sozialversicherung nicht erfüllte.</p>\n'
+'          <p>Das Steuerberater-Gen liegt mir im Blut. Geprägt von der Arbeit meines Vaters heuerte ich bei der Sozietät Keller & Muyres an. Ausbildung und berufsbegleitendes Studium verhalfen mir zu einer Anstellung in einer renommierten Wirtschaftsprüfungsgesellschaft aus dem Profisportbereich, in der ich 2019 zum Prokuristen bestellt wurde.</p>\n'
+'          <p>Vor einigen Jahren habe ich den nächsten Schritt getan und mich mit meiner eigenen Steuerkanzlei in meiner Heimatstadt Mönchengladbach selbstständig gemacht. Durch meine über 15-jährige Erfahrung bieten mein Team und ich Ihnen heute professionelle Steuerberatung, so individuell wie Sie.</p>\n        </div>\n      </div>\n    </div>\n  </section>\n')
 # Team-Grid
 kb += '  <section class="section">\n    <div class="container">\n      <div class="section-intro reveal">\n        <p class="eyebrow">Unser Team</p>\n        <h2 class="h2">Menschen, die fuer Steuern brennen.</h2>\n      </div>\n      <div class="team stagger reveal">\n'
 for img, name, role in TEAM:
@@ -247,29 +252,37 @@ kb += '      </div>\n    </div>\n  </section>\n'
 kb += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="section-intro reveal">\n'
 '        <p class="eyebrow">Kooperationspartner</p>\n        <h2 class="h2">Beste Beratung Hand in Hand.</h2>\n'
 '        <p class="lead">Gemeinsam mit unserem Kooperationspartner, dem <a href="weiter.html?ziel=https://www.steuerberatungneumann.de/">Steuerbüro Lars Neumann</a> aus Düsseldorf, decken wir ein breites Fachspektrum ab und gehen persönlich und individuell auf Ihre Steuerfragen ein. Schwerpunkte sind unter anderem Jahresabschluss, Grundsteuererklärung, Gründungsberatung und Einkommensteuererklärung.</p>\n      </div>\n    </div>\n  </section>\n')
+kb += ('  <section class="section">\n    <div class="container">\n'
+'      <div class="section-intro reveal"><p class="eyebrow">Mitgliedschaften und Partner</p><h2 class="h2">Geprueft und gut vernetzt.</h2></div>\n'
+'      <div class="partners reveal">\n'
+'        <figure><img src="media/partner/ihr-steuerberater.svg" alt="Ihr Steuerberater: unabhaengig, zuverlaessig, vorausschauend"></figure>\n'
+'        <figure><img src="media/partner/stbk.webp" alt="Steuerberaterkammer Duesseldorf"></figure>\n'
+'        <figure><img src="media/partner/datev.svg" alt="DATEV Digitale Kanzlei 2022"></figure>\n'
+'        <figure><img src="media/partner/lars-neumann.webp" alt="Steuerbuero Lars Neumann"></figure>\n'
+'      </div>\n    </div>\n  </section>\n')
 kb += cta_band()
-write("kanzlei", "Kanzlei", "Die Steuerkanzlei Muyres in Moenchengladbach: gegruendet 2020 von Michael Muyres, am Bunten Garten. Lernen Sie unser Team kennen.", "kanzlei", kb)
+write("kanzlei", "Kanzlei", "Die Steuerkanzlei Muyres in Moenchengladbach: gegruendet 2020 von Michael Muyres, am Bunten Garten. Lernen Sie unser Team kennen.", "kanzlei", kb, "kanzlei")
 
 # ---------------- Service ----------------
 DOWN = ["Checkliste Einkommensteuer", "Fragebogen Sofortmeldung", "Personalfragebogen Allgemein",
         "Personalfragebogen Auszubildende", "Personalfragebogen Minijob", "Vorlage zur Dokumentation der taeglichen Arbeitszeit"]
-sb = subhero("Service", "Unsere Services.", "Hier finden Sie nuetzliche Dokumente und Vorlagen rund um das Thema Steuern.")
+sb = subhero("Service", "Unsere Services.", "Hier finden Sie nuetzliche Dokumente und Vorlagen rund um das Thema Steuern.", "service")
 sb += '  <section class="section">\n    <div class="container">\n      <div class="section-intro reveal">\n        <p class="eyebrow">Downloads</p>\n        <h2 class="h2">Dokumente und Vorlagen.</h2>\n        <p class="lead">Im Original stehen diese Vorlagen als Download bereit. In diesem Entwurf sind die Dateien nicht hinterlegt.</p>\n      </div>\n      <ul class="llist stagger reveal">\n'
 for d in DOWN:
     sb += '        <li>' + d + '</li>\n'
 sb += '      </ul>\n    </div>\n  </section>\n'
 sb += cta_band()
-write("service", "Service", "Nuetzliche Dokumente und Vorlagen der Steuerberatung Muyres: Checklisten, Personalfragebogen und mehr.", "service", sb)
+write("service", "Service", "Nuetzliche Dokumente und Vorlagen der Steuerberatung Muyres: Checklisten, Personalfragebogen und mehr.", "service", sb, "service")
 
 # ---------------- Kontakt ----------------
 kc = subhero("Kontakt", "Kontakt.",
-   "Ob als Privatperson, Unternehmer oder Selbststaendiger: Bei uns erhalten Sie eine kompetente Beratung, bei der wir individuell auf Sie und Ihre Wuensche eingehen.")
+   "Ob als Privatperson, Unternehmer oder Selbststaendiger: Bei uns erhalten Sie eine kompetente Beratung, bei der wir individuell auf Sie und Ihre Wuensche eingehen.", "kontakt")
 kc += ('  <section class="section">\n    <div class="container">\n      <div class="split">\n'
 '        <div class="prose reveal">\n          <p class="eyebrow">So erreichen Sie uns</p>\n          <h2 class="h2">Wir melden uns umgehend zurueck.</h2>\n'
 '          <div class="contactlist">\n'
-'            <a href="tel:+4921614950780"><img class="ic" src="media/icon-phone.svg" alt="">02161 / 49 50 78 - 0</a>\n'
-'            <a href="mailto:info@steuerberatung-muyres.de"><img class="ic" src="media/icon-envelope.svg" alt="">info@steuerberatung-muyres.de</a>\n'
-'            <span><img class="ic" src="media/icon-calendar.svg" alt="">Beethovenstrasse 55, 41061 Moenchengladbach</span>\n          </div>\n'
+'            <a href="tel:+4921614950780"><img class="ic" src="media/icon-phone-bx.svg" alt="">02161 / 49 50 78 - 0</a>\n'
+'            <a href="mailto:info@steuerberatung-muyres.de"><img class="ic" src="media/icon-envelope-bx.svg" alt="">info@steuerberatung-muyres.de</a>\n'
+'            <span><img class="ic" src="media/icon-calendar-bx.svg" alt="">Beethovenstrasse 55, 41061 Moenchengladbach</span>\n          </div>\n'
 '          <p class="hours">Montag bis Donnerstag: 8:30 - 12:30 und 13:30 - 16:30 Uhr<br>Freitag: 8:30 - 13:00 Uhr<br>Telefax: 02161 / 49 50 78 - 9</p>\n        </div>\n'
 '        <form class="cform reveal" onsubmit="return false">\n'
 '          <p class="cform__note">Demonstrator: Dieses Formular versendet keine Daten.</p>\n'
@@ -277,17 +290,20 @@ kc += ('  <section class="section">\n    <div class="container">\n      <div cla
 '          <label>E-Mail<input type="email" name="email" autocomplete="email"></label>\n'
 '          <label>Nachricht<textarea name="nachricht" rows="4"></textarea></label>\n'
 '          <button class="btn btn--primary" type="submit">Absenden</button>\n        </form>\n      </div>\n    </div>\n  </section>\n')
-write("kontakt", "Kontakt", "Kontakt zur Steuerberatung Muyres in Moenchengladbach: Telefon, E-Mail, Anschrift und Bueurozeiten.", "kontakt", kc)
+kc += ('  <section class="mapwrap" aria-label="Standort">\n'
+'    <iframe title="Standort der Steuerberatung Muyres, Beethovenstrasse 55, Moenchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"\n'
+'      src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>\n  </section>\n')
+write("kontakt", "Kontakt", "Kontakt zur Steuerberatung Muyres in Moenchengladbach: Telefon, E-Mail, Anschrift und Bueurozeiten.", "kontakt", kc, "kontakt")
 
 # ---------------- Steuerberaterwechsel ----------------
 wb = subhero("Steuerberaterwechsel", "Steuerberaterwechsel.",
-   "Sie sind mit Ihrem Steuerberater unzufrieden, fuehlen sich nicht gut beraten oder warten ewig auf Rueckrufe? Die Gruende fuer einen Wechsel koennen vielfaeltig sein.")
+   "Sie sind mit Ihrem Steuerberater unzufrieden, fuehlen sich nicht gut beraten oder warten ewig auf Rueckrufe? Die Gruende fuer einen Wechsel koennen vielfaeltig sein.", "steuerberaterwechsel")
 wb += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Fuer uns sind eine ehrliche und transparente Beratung die wichtigste Basis fuer eine erfolgreiche Zusammenarbeit. Unser Anspruch ist es, Sie bei allen steuerlichen Anfragen jederzeit kompetent zu unterstuetzen, damit Sie Ihre Steuerangelegenheiten in guten Haenden wissen.</p>\n'
 '        <p>Nutzen Sie die Chance, uns bei einem unverbindlichen Erstgespraech kennenzulernen. Einen schnellen Ueberblick ueber die wichtigsten Punkte zum Wechsel finden Sie in unserer <a href="service.html">Checkliste Steuerberaterwechsel</a>.</p>\n      </div>\n    </div>\n  </section>\n')
 wb += zitat("Ein gutes Wort findet gut statt.")
 wb += cta_band()
-write("steuerberaterwechsel", "Steuerberaterwechsel", "Steuerberater wechseln leicht gemacht: ehrliche, transparente Beratung bei der Steuerberatung Muyres in Moenchengladbach.", "steuerberaterwechsel", wb)
+write("steuerberaterwechsel", "Steuerberaterwechsel", "Steuerberater wechseln leicht gemacht: ehrliche, transparente Beratung bei der Steuerberatung Muyres in Moenchengladbach.", "steuerberaterwechsel", wb, "steuerberaterwechsel")
 
 # ---------------- Karriere ----------------
 BEN = ["Geregelte Arbeitszeit fuer eine ausgewogene Work-Life-Balance", "Ansprechende, leistungsgerechte Verguetung",
@@ -296,7 +312,7 @@ BEN = ["Geregelte Arbeitszeit fuer eine ausgewogene Work-Life-Balance", "Ansprec
  "Kostenfreie Parkplaetze unweit der Kanzlei", "Regelmaessige Teamevents wie Sommerfest und Grillabende",
  "Boni wie Einmalzahlungen, Tankgutscheine und Zuschuesse zur betrieblichen Altersvorsorge"]
 ka = subhero("Karriere", "Wir suchen dich.",
-   "Lust auf interessante Mandanten, abwechslungsreiche Arbeitsfelder und ein motiviertes Team? Dann komm zu uns.")
+   "Lust auf interessante Mandanten, abwechslungsreiche Arbeitsfelder und ein motiviertes Team? Dann komm zu uns.", "karriere")
 ka += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Wir sind eine moderne Steuerkanzlei mit Sitz in Moenchengladbach, direkt am historisch bedeutsamen Bunten Garten. Zwar sind wir nicht so musikalisch wie unser Leitbild Ludwig van Beethoven, aber wie er brennen wir fuer unseren Beruf und sind mit Herz dabei. Statt taeglich dieselben Aufgaben abzuarbeiten, erhaeltst du ein intensives Onboarding und uebernimmst Schritt fuer Schritt eigene Aufgabengebiete.</p>\n      </div>\n    </div>\n  </section>\n')
 ka += '  <section class="section section--stone">\n    <div class="container">\n      <div class="section-intro reveal"><p class="eyebrow">Das erwartet dich</p><h2 class="h2">Gute Gruende fuer uns.</h2></div>\n      <ul class="llist stagger reveal">\n'
@@ -307,16 +323,16 @@ ka += ('  <section class="section section--navy">\n    <div class="container">\n
 '        <div class="reveal"><p class="eyebrow">Bewirb dich</p><h2 class="h2">Gehe mit uns den naechsten Schritt.</h2>\n'
 '        <p class="lead">Ob gradlinige Laufbahn oder Quer- und Wiedereinsteiger: Sende deine Bewerbung mit Gehaltsvorstellung und fruehestmoeglichem Eintrittstermin direkt an Herrn Muyres.</p></div>\n'
 '        <div class="ctaband__actions reveal"><a class="btn btn--primary" href="mailto:info@steuerberatung-muyres.de">Bewerbung senden</a></div>\n      </div>\n    </div>\n  </section>\n')
-write("karriere", "Karriere", "Karriere bei der Steuerberatung Muyres in Moenchengladbach: motiviertes Team, moderne Kanzlei, attraktive Benefits. Auch fuer Quereinsteiger.", "karriere", ka)
+write("karriere", "Karriere", "Karriere bei der Steuerberatung Muyres in Moenchengladbach: motiviertes Team, moderne Kanzlei, attraktive Benefits. Auch fuer Quereinsteiger.", "karriere", ka, "karriere")
 
 # ---------------- Coronasoforthilfe ----------------
 cb = subhero("Coronasoforthilfe", "Coronasoforthilfe.",
-   "Corona war und ist fuer uns alle eine Herausforderung. Damit Sie den Ueberblick behalten, beantworten wir Ihre Fragen rund um Kurzarbeit, Steuerstundung, Darlehensprogramme und weitere Themen.")
+   "Corona war und ist fuer uns alle eine Herausforderung. Damit Sie den Ueberblick behalten, beantworten wir Ihre Fragen rund um Kurzarbeit, Steuerstundung, Darlehensprogramme und weitere Themen.", "coronasoforthilfe")
 cb += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Welche steuerliche Unterstuetzung der Staat Ihnen in der Coronazeit bietet und wie Sie diese geltend machen koennen, dazu beraten wir Sie gerne, als Telefonberatung, Onlinecoaching oder persoenlichen Termin vor Ort.</p>\n      </div>\n    </div>\n  </section>\n')
 cb += zitat("Der Mensch besitzt nichts Edleres und Kostbareres als die Zeit.")
 cb += cta_band()
-write("coronasoforthilfe", "Coronasoforthilfe", "Steuerliche Beratung rund um Corona: Kurzarbeit, Steuerstundung und Darlehensprogramme bei der Steuerberatung Muyres.", "coronasoforthilfe", cb)
+write("coronasoforthilfe", "Coronasoforthilfe", "Steuerliche Beratung rund um Corona: Kurzarbeit, Steuerstundung und Darlehensprogramme bei der Steuerberatung Muyres.", "coronasoforthilfe", cb, "coronasoforthilfe")
 
 # ---------------- Impressum (Demonstrator) ----------------
 im = subhero("Impressum", "Impressum.", "Angaben zu diesem Webseiten-Entwurf.")

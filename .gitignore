@@ -5,3 +5,4 @@ _source/body.css
 *.output
 .DS_Store
 Thumbs.db
+_source/header_orig/
