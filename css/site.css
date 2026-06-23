@@ -246,7 +246,7 @@ p{margin:0 0 1.1rem}
 .subhero::after{content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
 .subhero .container{position:relative; z-index:1; width:100%}
 @media(max-width:760px){.subhero{min-height:420px}}
-.subhero .crumb{font-size:.84rem; color:rgba(255,255,255,.62); margin-bottom:16px; line-height:1.9}
+.subhero .crumb{max-width:none; font-size:.8rem; color:rgba(255,255,255,.62); margin-bottom:16px; line-height:1.8}
 .subhero .crumb a{color:rgba(255,255,255,.78); transition:color .2s var(--ease)}
 .subhero .crumb a:hover{color:#fff}
 .subhero h1{color:#fff; font-size:clamp(2.1rem,1.3rem + 2.8vw,3.2rem)}
