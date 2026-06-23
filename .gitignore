@@ -1,0 +1,7 @@
+# Arbeitsartefakte / Quell-Scratch
+_source/shots/
+_source/*.json
+_source/body.css
+*.output
+.DS_Store
+Thumbs.db

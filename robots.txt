@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suak0903.github.io/steuerberatung-muyres/sitemap.xml
