@@ -10,7 +10,7 @@ import os, io
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "33"
+VER = "35"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -127,15 +127,22 @@ TAIL = (
 '<script src="js/site.js?v=' + VER + '"></script>\n</body>\n</html>\n')
 
 
-def subhero(crumb, title, lead, bg=None):
+def subhero(crumb, title, lead, bg=None, extra=''):
     style = (' style="background-image:url(media/header/' + bg + '.webp)"') if bg else ''
     c = '<section class="subhero"' + style + '>\n  <div class="container">\n'
     c += '    <p class="crumb"><a href="index.html">Start</a> &nbsp;/&nbsp; ' + crumb + '</p>\n'
     c += '    <h1>' + title + '</h1>\n'
     if lead:
         c += '    <p>' + lead + '</p>\n'
+    c += extra
     c += '  </div>\n</section>\n'
     return c
+
+FG_NAV = '    <p class="subhero__fg">' + ''.join(
+    '<a href="fachgebiete-%s.html">%s</a>' % (k, l) for k, l in
+    [("unternehmen","Unternehmen"),("privatpersonen","Privatpersonen"),
+     ("existenzgruender","Existenzgruender & Startups"),("freiberufler","Freiberufler & Freelancer"),
+     ("immobilienbesitzer","Immobilienbesitzer")]) + '</p>\n'
 
 
 def cta_band(light=True):
@@ -212,7 +219,7 @@ for key,(t,desc,lead,items) in FG.items():
 
 # Fachgebiete-Uebersicht
 ov = subhero("Fachgebiete", "Wir verstehen uns als Partner an Ihrer Seite.",
-   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.", "kanzlei")
+   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.", "fachgebiete-unternehmen", FG_NAV)
 ov += '  <section class="section">\n    <div class="container">\n      <div class="fields fields--5 stagger reveal">\n'
 FG_ORDER = [("unternehmen","Unternehmen"),("privatpersonen","Privatpersonen"),("existenzgruender","Existenzgruender & Startups"),("freiberufler","Freiberufler & Freelancer"),("immobilienbesitzer","Immobilienbesitzer")]
 for key,label in FG_ORDER:
@@ -222,7 +229,7 @@ for key,label in FG_ORDER:
            '          <span class="field__more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>\n        </a>\n')
 ov += '      </div>\n    </div>\n  </section>\n'
 ov += cta_band()
-write("fachgebiete", "Fachgebiete", "Unsere Fachgebiete: Steuerberatung fuer Unternehmen, Privatpersonen, Existenzgruender, Freiberufler und Immobilienbesitzer in Moenchengladbach.", "fachgebiete", ov, "kanzlei")
+write("fachgebiete", "Fachgebiete", "Unsere Fachgebiete: Steuerberatung fuer Unternehmen, Privatpersonen, Existenzgruender, Freiberufler und Immobilienbesitzer in Moenchengladbach.", "fachgebiete", ov, "fachgebiete-unternehmen")
 
 # ---------------- Kanzlei (mit Team) ----------------
 TEAM = [

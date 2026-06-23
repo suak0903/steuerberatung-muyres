@@ -241,9 +241,16 @@ p{margin:0 0 1.1rem}
 .footer__bottom a{color:rgba(255,255,255,.64)}
 
 /* ---------- Subpage hero ---------- */
-.subhero{position:relative; overflow:hidden; isolation:isolate; background:var(--navy) center/cover no-repeat; color:#fff; padding-block:calc(var(--nav-h) + 44px) 70px}
+.subhero{position:relative; overflow:hidden; isolation:isolate; background:var(--navy) center/cover no-repeat; color:#fff;
+  display:flex; align-items:flex-end; min-height:480px; padding:calc(var(--nav-h) + 40px) 0 56px}
 .subhero::after{content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
-.subhero .container{position:relative; z-index:1}
+.subhero .container{position:relative; z-index:1; width:100%}
+.subhero__fg{display:flex; flex-wrap:wrap; align-items:center; gap:8px 0; margin-top:26px; font-size:.76rem; text-transform:uppercase; letter-spacing:.13em; font-weight:600}
+.subhero__fg a{color:rgba(255,255,255,.74); padding:0 18px; position:relative; transition:color .2s var(--ease)}
+.subhero__fg a:first-child{padding-left:0}
+.subhero__fg a:hover{color:#fff}
+.subhero__fg a + a::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:4px; border-radius:50%; background:var(--bordeaux)}
+@media(max-width:760px){.subhero{min-height:420px} .subhero__fg{display:none}}
 .subhero .crumb{font-size:.84rem; color:rgba(255,255,255,.62); margin-bottom:16px}
 .subhero .crumb a{color:rgba(255,255,255,.78)}
 .subhero h1{color:#fff; font-size:clamp(2.1rem,1.3rem + 2.8vw,3.2rem)}
