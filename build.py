@@ -10,7 +10,7 @@ import os, io
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "36"
+VER = "37"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -127,22 +127,21 @@ TAIL = (
 '<script src="js/site.js?v=' + VER + '"></script>\n</body>\n</html>\n')
 
 
-def subhero(crumb, title, lead, bg=None, extra=''):
+def subhero(crumb, title, lead, bg=None):
     style = (' style="background-image:url(media/header/' + bg + '.webp)"') if bg else ''
     c = '<section class="subhero"' + style + '>\n  <div class="container">\n'
     c += '    <p class="crumb"><a href="index.html">Start</a> &nbsp;/&nbsp; ' + crumb + '</p>\n'
-    c += extra
     c += '    <h1>' + title + '</h1>\n'
     if lead:
         c += '    <p>' + lead + '</p>\n'
     c += '  </div>\n</section>\n'
     return c
 
-FG_NAV = '    <p class="subhero__fg">' + ''.join(
-    '<a href="fachgebiete-%s.html">%s</a>' % (k, l) for k, l in
-    [("unternehmen","Unternehmen"),("privatpersonen","Privatpersonen"),
-     ("existenzgruender","Existenzgruender & Startups"),("freiberufler","Freiberufler & Freelancer"),
-     ("immobilienbesitzer","Immobilienbesitzer")]) + '</p>\n'
+FG_ORDER = [("unternehmen", "Unternehmen"), ("privatpersonen", "Privatpersonen"),
+            ("existenzgruender", "Existenzgruender & Startups"), ("freiberufler", "Freiberufler & Freelancer"),
+            ("immobilienbesitzer", "Immobilienbesitzer")]
+# Fachgebiete als Fortsetzung der Breadcrumb-Zeile (Suat-Wunsch 23.06.)
+FG_CRUMB = ' &nbsp;/&nbsp; '.join('<a href="fachgebiete-%s.html">%s</a>' % (k, l) for k, l in FG_ORDER)
 
 
 def cta_band(light=True):
@@ -218,10 +217,9 @@ for key,(t,desc,lead,items) in FG.items():
     write("fachgebiete-" + key, "Steuerberater " + t, desc, "fachgebiete", body, "fachgebiete-" + key)
 
 # Fachgebiete-Uebersicht
-ov = subhero("Fachgebiete", "Wir verstehen uns als Partner an Ihrer Seite.",
-   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.", "fachgebiete-unternehmen", FG_NAV)
+ov = subhero("Fachgebiete &nbsp;/&nbsp; " + FG_CRUMB, "Wir verstehen uns als Partner an Ihrer Seite.",
+   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespraech lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wuensche.", "fachgebiete-unternehmen")
 ov += '  <section class="section">\n    <div class="container">\n      <div class="fields fields--5 stagger reveal">\n'
-FG_ORDER = [("unternehmen","Unternehmen"),("privatpersonen","Privatpersonen"),("existenzgruender","Existenzgruender & Startups"),("freiberufler","Freiberufler & Freelancer"),("immobilienbesitzer","Immobilienbesitzer")]
 for key,label in FG_ORDER:
     ov += ('        <a class="field" href="fachgebiete-' + key + '.html">\n'
            '          <span class="field__ic"><img src="media/' + FG_ICON[key] + '.svg" alt=""></span>\n'
@@ -256,9 +254,11 @@ for img, name, role in TEAM:
            '          <h3>' + name + '</h3>\n          <p>' + role + '</p>\n        </figure>\n')
 kb += '      </div>\n    </div>\n  </section>\n'
 # Kooperationspartner
-kb += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="section-intro reveal">\n'
+kb += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p class="eyebrow">Kooperationspartner</p>\n        <h2 class="h2">Beste Beratung Hand in Hand.</h2>\n'
-'        <p class="lead">Gemeinsam mit unserem Kooperationspartner, dem <a href="weiter.html?ziel=https://www.steuerberatungneumann.de/">Steuerbüro Lars Neumann</a> aus Düsseldorf, decken wir ein breites Fachspektrum ab und gehen persönlich und individuell auf Ihre Steuerfragen ein. Schwerpunkte sind unter anderem Jahresabschluss, Grundsteuererklärung, Gründungsberatung und Einkommensteuererklärung.</p>\n      </div>\n    </div>\n  </section>\n')
+'        <p>Gemeinsam mit unserem Kooperationspartner, dem <a href="weiter.html?ziel=https://www.steuerberatungneumann.de/">Steuerbüro Lars Neumann</a>, decken wir ein breites Fachspektrum ab und können auf Ihre Steuerfragen persönlich und individuell eingehen.</p>\n'
+'        <p>Als Steuerberater lebt und arbeitet Lars Neumann in Düsseldorf. Seine berufliche Laufbahn startete er bei einer Big4-Gesellschaft aus dem Steuerbereich. Neben der Führung seiner Kanzlei ist er als Gesellschafter bei einer Wirtschaftsprüfungsgesellschaft tätig, die unter anderem im Bereich Eishockey, Handball und Fußball agiert. Auch privat stehen Lars Neumann und Michael Muyres regelmäßig in engem Kontakt. So erhalten Sie zu jeder Zeit beste Beratung Hand in Hand.</p>\n'
+'        <p>Die Schwerpunkte unserer Zusammenarbeit sind unter anderem der <a href="fachgebiete-unternehmen.html">Jahresabschluss für Unternehmen</a>, die <a href="fachgebiete-immobilienbesitzer.html">Grundsteuererklärung für Immobilienbesitzer</a>, die <a href="fachgebiete-existenzgruender.html">Gründungsberatung für Existenzgründer und Startups</a> oder auch die professionelle Beratung zur <a href="fachgebiete-privatpersonen.html">Einkommensteuererklärung für Privatpersonen</a>.</p>\n      </div>\n    </div>\n  </section>\n')
 kb += ('  <section class="section">\n    <div class="container">\n'
 '      <div class="section-intro reveal"><p class="eyebrow">Mitgliedschaften und Partner</p><h2 class="h2">Geprueft und gut vernetzt.</h2></div>\n'
 '      <div class="partners reveal">\n'
