@@ -117,7 +117,7 @@ p{margin:0 0 1.1rem}
 .nav.menu-open .nav__burger span{background:#fff}
 .nav.menu-open .nav__burger{margin-left:0}
 /* enge, einheitliche Abstaende bei offenem Menue, damit alles passt + X ueber dem Hamburger bleibt */
-.nav.menu-open .nav__inner{gap:6px; padding-inline:12px}
+.nav.menu-open .nav__inner{gap:6px}
 .nav.menu-open .nav__logo img{height:46px}
 /* Social-Icons im Header, nur bei offenem Menue (links neben dem Kontakt-Button) */
 .nav__msocial{display:none}
