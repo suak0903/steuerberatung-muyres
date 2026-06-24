@@ -116,6 +116,15 @@ p{margin:0 0 1.1rem}
 .nav.menu-open .logo-dark{display:none}
 .nav.menu-open .nav__burger span{background:#fff}
 .nav.menu-open .nav__burger{margin-left:16px}
+/* Social-Icons im Header, nur bei offenem Menue (links neben dem Kontakt-Button) */
+.nav__msocial{display:none}
+.nav.menu-open .nav__msocial{display:inline-flex; gap:8px; align-items:center; margin-left:auto; transform:translateY(-5px)}
+.nav.menu-open .nav__mcontact{margin-left:10px}
+.nav__msocial a{width:34px; height:34px; border:1px solid rgba(255,255,255,.5); display:flex; align-items:center; justify-content:center; color:#fff; transition:.2s var(--ease)}
+.nav__msocial a:hover{background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.7)}
+.nav__msocial svg{width:16px; height:16px; fill:currentColor}
+/* sehr schmale Screens: Social-Icons weglassen, damit Kontakt-Button + Burger passen */
+@media(max-width:389px){.nav.menu-open .nav__msocial{display:none}}
 
 /* ---------- Mobile menu (Panel unter dem Header, ~90% deckend, bis Kontakt) ---------- */
 .mmenu{position:fixed; top:0; left:0; right:0; z-index:130; color:#fff;
@@ -134,7 +143,7 @@ p{margin:0 0 1.1rem}
 /* aktive Seite (Orientierung) bleibt gehighlightet */
 .mmenu a[aria-current="page"]{color:var(--sky); padding-left:20px}
 .mmenu a[aria-current="page"]::before{opacity:1; transform:translateY(-50%) scaleY(1)}
-.mmenu-backdrop{position:fixed; inset:0; z-index:120; background:transparent}
+.mmenu-backdrop{position:fixed; inset:0; z-index:120; background:transparent; pointer-events:none}
 .mmenu-backdrop[hidden]{display:none}
 
 /* ---------- Hero-Eingangsanimation (ruhig, gestaffelt) ---------- */
@@ -246,15 +255,19 @@ p{margin:0 0 1.1rem}
 .footer__bottom a{color:rgba(255,255,255,.64)}
 
 /* ---------- Subpage hero ---------- */
-.subhero{position:relative; overflow:hidden; isolation:isolate; background:var(--navy) center/cover no-repeat; color:#fff;
+.subhero{position:relative; overflow:hidden; isolation:isolate; background:var(--navy); color:#fff;
   display:flex; align-items:flex-end; min-height:480px; padding:calc(var(--nav-h) + 40px) 0 56px}
-.subhero::after{content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
-.subhero .container{position:relative; z-index:1; width:100%}
-@media(max-width:760px){.subhero{min-height:420px}}
+.subhero__bg{position:absolute; left:0; right:0; top:-8%; height:116%; z-index:0;
+  background-position:center; background-size:cover; background-repeat:no-repeat; will-change:transform}
+.subhero::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
+.subhero .container{position:relative; z-index:2; width:100%}
+@media(max-width:760px){.subhero{min-height:565px}}
 .subhero .crumb{max-width:none; font-size:.8rem; color:rgba(255,255,255,.62); margin-bottom:16px; line-height:1.8}
 .subhero .crumb a{color:rgba(255,255,255,.78); transition:color .2s var(--ease)}
 .subhero .crumb a:hover{color:#fff}
 .subhero h1{color:#fff; font-size:clamp(2.1rem,1.3rem + 2.8vw,3.2rem)}
+.subhero h1 .accent{color:var(--sky); font-weight:700}
+.subhero__rule{width:104px; height:3px; background:var(--bordeaux); margin:22px 0 0}
 .subhero p{color:rgba(255,255,255,.82); max-width:56ch; margin-top:18px; font-size:1.12rem; font-weight:300}
 
 /* Helle Schluss-Variante des CTA-Bands (vor dem navy Footer) */
@@ -333,10 +346,10 @@ p{margin:0 0 1.1rem}
 .cform input,.cform textarea{font-family:var(--font); font-size:1rem; padding:11px 12px; border:1px solid var(--line); background:#fff; color:var(--ink)}
 .cform input:focus,.cform textarea:focus{outline:2px solid var(--bordeaux); outline-offset:1px}
 .cform button{align-self:flex-start; margin-top:4px}
-.team{display:grid; grid-template-columns:repeat(3,1fr); gap:30px 28px}
+.team{display:grid; grid-template-columns:repeat(3,1fr); gap:30px 28px; justify-items:center}
 .tcard{text-align:center}
-.tcard__photo{aspect-ratio:1; max-width:240px; margin:0 auto 16px; overflow:hidden}
-.tcard__photo img{width:100%; height:100%; object-fit:contain}
+.tcard__photo{aspect-ratio:1; max-width:240px; margin:0 auto 16px; overflow:hidden; border-radius:50%; border:6px solid #0D1931; background:#fff}
+.tcard__photo img{width:100%; height:100%; object-fit:cover; border-radius:50%}
 .tcard h3{font-size:1.12rem; font-weight:600; margin:0 0 3px}
 .tcard p{margin:0; color:var(--muted); font-size:.95rem}
 @media(max-width:760px){.llist{grid-template-columns:1fr}.team{grid-template-columns:1fr 1fr}}

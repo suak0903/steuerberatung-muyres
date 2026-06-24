@@ -10,7 +10,7 @@ import os, io
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "39"
+VER = "41"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -27,6 +27,13 @@ JSONLD = ('<script type="application/ld+json">{"@context":"https://schema.org",'
           '"postalCode":"41061","addressLocality":"Mönchengladbach","addressCountry":"DE"},'
           '"areaServed":"Mönchengladbach","founder":{"@type":"Person","name":"Michael Muyres"},'
           '"openingHours":["Mo-Th 08:30-12:30","Mo-Th 13:30-16:30","Fr 08:30-13:00"]}</script>') % (ORIG, ORIG, ORIG)
+
+
+MSOCIAL = (
+    '    <div class="nav__msocial">\n'
+    '      <a href="weiter.html?ziel=https://www.xing.com/pages/steuerberatung-muyres" aria-label="Steuerberatung Muyres auf Xing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.308-.434-.659-.962-.659H3.648v.016z"/></svg></a>\n'
+    '      <a href="weiter.html?ziel=https://www.linkedin.com/company/steuerberatung-muyres/" aria-label="Steuerberatung Muyres auf LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>\n'
+    '    </div>\n')
 
 
 def head(title, desc, slug, og="muyres"):
@@ -82,6 +89,7 @@ def nav(active):
         '    </a>\n'
         '    <nav class="nav__links" aria-label="Hauptnavigation">\n' + links + '    </nav>\n'
         '    <a class="btn btn--outline nav__cta" href="kontakt.html">Erstgespräch</a>\n'
+        + MSOCIAL +
         '    <a class="nav__mcontact" href="kontakt.html">Kontakt</a>\n'
         '    <button class="nav__burger" id="burger" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span><span></span></button>\n'
         '  </div>\n</header>\n\n'
@@ -127,11 +135,13 @@ TAIL = (
 '<script src="js/site.js?v=' + VER + '"></script>\n</body>\n</html>\n')
 
 
-def subhero(crumb, title, lead, bg=None):
-    style = (' style="background-image:url(media/header/' + bg + '.webp)"') if bg else ''
-    c = '<section class="subhero"' + style + '>\n  <div class="container">\n'
+def subhero(crumb, title, lead, bg=None, accent=''):
+    bgdiv = ('  <div class="subhero__bg" id="subheroBg" style="background-image:url(media/header/' + bg + '.webp)"></div>\n') if bg else ''
+    c = '<section class="subhero">\n' + bgdiv + '  <div class="container">\n'
     c += '    <p class="crumb"><a href="index.html">Start</a> &nbsp;/&nbsp; ' + crumb + '</p>\n'
-    c += '    <h1>' + title + '</h1>\n'
+    h = title.replace(accent, '<span class="accent">' + accent + '</span>', 1) if accent and accent in title else title
+    c += '    <h1>' + h + '</h1>\n'
+    c += '    <div class="subhero__rule"></div>\n'
     if lead:
         c += '    <p>' + lead + '</p>\n'
     c += '  </div>\n</section>\n'
@@ -210,7 +220,7 @@ FG = {
 FG_ICON = {"unternehmen":"icon-unternehmen","privatpersonen":"icon-privatpersonen","existenzgruender":"icon-startups","freiberufler":"icon-freelancer","immobilienbesitzer":"icon-immobilienbesitzer"}
 
 for key,(t,desc,lead,items) in FG.items():
-    body = subhero('<a href="fachgebiete.html">Fachgebiete</a> &nbsp;/&nbsp; ' + t, "Steuerberater für " + t, lead, "fachgebiete-" + key)
+    body = subhero('<a href="fachgebiete.html">Fachgebiete</a> &nbsp;/&nbsp; ' + t, "Steuerberater für " + t, lead, "fachgebiete-" + key, accent=t)
     body += leistungen("Beispiele aus unserem Leistungsspektrum.", items)
     body += pledges_section()
     body += cta_band()
@@ -218,7 +228,7 @@ for key,(t,desc,lead,items) in FG.items():
 
 # Fachgebiete-Übersicht
 ov = subhero("Fachgebiete &nbsp;/&nbsp; " + FG_CRUMB, "Wir verstehen uns als Partner an Ihrer Seite.",
-   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespräch lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wünsche.", "fachgebiete-unternehmen")
+   "Ob als Unternehmer, Immobilienbesitzer oder Privatperson: Bei einem unverbindlichen Erstgespräch lernen wir uns kennen und besprechen Ihre steuerlichen Ziele und Wünsche.", "fachgebiete-unternehmen", accent="an Ihrer Seite.")
 ov += '  <section class="section">\n    <div class="container">\n      <div class="fields fields--5 stagger reveal">\n'
 for key,label in FG_ORDER:
     ov += ('        <a class="field" href="fachgebiete-' + key + '.html">\n'
@@ -239,7 +249,7 @@ TEAM = [
  ("5-muyres-steuerberatung-team-fr-rautenberger", "Ulrike Rautenberger", "Steuerfachwirtin, Bilanzbuchhalterin"),
 ]
 kb = subhero("Kanzlei", "Unser Steuerbüro.",
-   "Gegründet 2020 von Michael Muyres, liegt unsere Steuerkanzlei heute direkt am Bunten Garten an der Beethovenstraße. Als moderne Kanzlei sind wir das Bindeglied zwischen klassischer Steuerberatung und aktuellen Steuerthemen.", "kanzlei")
+   "Gegründet 2020 von Michael Muyres, liegt unsere Steuerkanzlei heute direkt am Bunten Garten an der Beethovenstraße. Als moderne Kanzlei sind wir das Bindeglied zwischen klassischer Steuerberatung und aktuellen Steuerthemen.", "kanzlei", accent="Steuerbüro.")
 # Werdegang (Foto + Text)
 kb += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="split">\n'
 '        <div class="split__media reveal"><img src="media/team/muyres-steuerberatung-michael-muyres-randlos.webp" alt="Michael Muyres, Steuerberater"></div>\n'
@@ -273,7 +283,7 @@ write("kanzlei", "Kanzlei", "Die Steuerkanzlei Muyres in Mönchengladbach: gegr�
 # ---------------- Service ----------------
 DOWN = ["Checkliste Einkommensteuer", "Fragebogen Sofortmeldung", "Personalfragebogen Allgemein",
         "Personalfragebogen Auszubildende", "Personalfragebogen Minijob", "Vorlage zur Dokumentation der täglichen Arbeitszeit"]
-sb = subhero("Service", "Unsere Services.", "Hier finden Sie nützliche Dokumente und Vorlagen rund um das Thema Steuern.", "service")
+sb = subhero("Service", "Unsere Services.", "Hier finden Sie nützliche Dokumente und Vorlagen rund um das Thema Steuern.", "service", accent="Services.")
 sb += '  <section class="section">\n    <div class="container">\n      <div class="section-intro reveal">\n        <p class="eyebrow">Downloads</p>\n        <h2 class="h2">Dokumente und Vorlagen.</h2>\n        <p class="lead">Im Original stehen diese Vorlagen als Download bereit. In diesem Entwurf sind die Dateien nicht hinterlegt.</p>\n      </div>\n      <ul class="llist stagger reveal">\n'
 for d in DOWN:
     sb += '        <li>' + d + '</li>\n'
@@ -319,7 +329,7 @@ BEN = ["Geregelte Arbeitszeit für eine ausgewogene Work-Life-Balance", "Ansprec
  "Kostenfreie Parkplätze unweit der Kanzlei", "Regelmäßige Teamevents wie Sommerfest und Grillabende",
  "Boni wie Einmalzahlungen, Tankgutscheine und Zuschüsse zur betrieblichen Altersvorsorge"]
 ka = subhero("Karriere", "Wir suchen dich.",
-   "Lust auf interessante Mandanten, abwechslungsreiche Arbeitsfelder und ein motiviertes Team? Dann komm zu uns.", "karriere")
+   "Lust auf interessante Mandanten, abwechslungsreiche Arbeitsfelder und ein motiviertes Team? Dann komm zu uns.", "karriere", accent="dich.")
 ka += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Wir sind eine moderne Steuerkanzlei mit Sitz in Mönchengladbach, direkt am historisch bedeutsamen Bunten Garten. Zwar sind wir nicht so musikalisch wie unser Leitbild Ludwig van Beethoven, aber wie er brennen wir für unseren Beruf und sind mit Herz dabei. Statt täglich dieselben Aufgaben abzuarbeiten, erhältst du ein intensives Onboarding und übernimmst Schritt für Schritt eigene Aufgabengebiete.</p>\n      </div>\n    </div>\n  </section>\n')
 ka += '  <section class="section section--stone">\n    <div class="container">\n      <div class="section-intro reveal"><p class="eyebrow">Das erwartet dich</p><h2 class="h2">Gute Gründe für uns.</h2></div>\n      <ul class="llist stagger reveal">\n'
@@ -363,7 +373,7 @@ write("datenschutz", "Datenschutz", "Datenschutzhinweise dieses statischen Redes
 
 # ---------------- Hinweise (Über diesen Entwurf) ----------------
 hw = subhero("Über diesen Entwurf", "Über diesen Entwurf.",
-   "Was Sie hier sehen, wie es entstanden ist und was funktioniert.")
+   "Was Sie hier sehen, wie es entstanden ist und was funktioniert.", accent="Entwurf.")
 hw += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <h2 class="h2">Was ist das?</h2>\n        <p>Ein unverbindlicher Redesign-Entwurf für die Steuerberatung Muyres, erstellt von Dr.-Ing. Suat Akyol. Ziel ist es zu zeigen, wie der bestehende Webauftritt in moderner, klarer Form aussehen könnte. Inhalte und Bilder wurden vom Original übernommen.</p>\n'
 '        <h2 class="h2">Was funktioniert, was nicht</h2>\n'
@@ -372,7 +382,7 @@ hw += ('  <section class="section">\n    <div class="container">\n      <div cla
 write("hinweise", "Über diesen Entwurf", "Hinweise zum Redesign-Entwurf der Steuerberatung Muyres von Dr.-Ing. Suat Akyol.", "", hw)
 
 # ---------------- weiter.html (Redirect-Platzhalter) ----------------
-wt = subhero("Externer Link", "Sie verlassen den Entwurf.", "")
+wt = subhero("Externer Link", "Sie verlassen den Entwurf.", "", accent="Entwurf.")
 wt += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Dieser Link führt auf eine externe Seite, die nicht Teil dieses Entwurfs ist.</p>\n'
 '        <p id="zielinfo"></p>\n        <p><a class="btn btn--primary" id="zielbtn" href="index.html">Weiter zur externen Seite</a> &nbsp; <a class="btn btn--ghost" href="index.html">Zurück</a></p>\n      </div>\n    </div>\n  </section>\n'
@@ -380,7 +390,7 @@ wt += ('  <section class="section">\n    <div class="container">\n      <div cla
 write("weiter", "Externer Link", "Zwischenseite für externe Links.", "", wt)
 
 # ---------------- 404 ----------------
-nf = subhero("Seite nicht gefunden", "Seite nicht gefunden.", "Die aufgerufene Seite existiert nicht.")
+nf = subhero("Seite nicht gefunden", "Seite nicht gefunden.", "Die aufgerufene Seite existiert nicht.", accent="nicht gefunden.")
 nf += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
 '        <p>Vielleicht hilft der Weg zurück zur <a href="index.html">Startseite</a> oder zu unseren <a href="fachgebiete.html">Fachgebieten</a>.</p>\n      </div>\n    </div>\n  </section>\n')
 write("404", "Seite nicht gefunden", "Seite nicht gefunden.", "", nf)

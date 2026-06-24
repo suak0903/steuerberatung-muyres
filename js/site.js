@@ -3,7 +3,7 @@
   "use strict";
 
   var nav = document.getElementById("nav");
-  var heroBg = document.getElementById("heroBg");
+  var heroBg = document.getElementById("heroBg") || document.getElementById("subheroBg");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.matchMedia("(max-width: 760px)");
 
@@ -34,11 +34,16 @@
     if (open) mmenu.removeAttribute("inert"); else mmenu.setAttribute("inert", "");
     if (burger) { burger.classList.toggle("open", open); burger.setAttribute("aria-expanded", open ? "true" : "false"); }
     if (backdrop) backdrop.hidden = !open;
-    document.body.style.overflow = open ? "hidden" : "";
+    /* KEIN body-overflow-Lock: bei offenem Menue darf der Hintergrund weiter scrollen */
   }
   function closeMenu() { setMenu(false); }
   if (burger) burger.addEventListener("click", function () { setMenu(!mmenu.classList.contains("open")); });
-  if (backdrop) backdrop.addEventListener("click", closeMenu);
+  /* Tap ausserhalb des Menues schliesst; ein vertikaler Swipe scrollt den Hintergrund (Backdrop laesst Touch durch) */
+  document.addEventListener("click", function (e) {
+    if (!mmenu || !mmenu.classList.contains("open")) return;
+    if (mmenu.contains(e.target) || (burger && burger.contains(e.target))) return;
+    closeMenu();
+  });
   if (mmenu) mmenu.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", closeMenu); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
   /* Swipe nach oben schliesst */
