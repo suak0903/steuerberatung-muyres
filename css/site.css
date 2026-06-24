@@ -393,7 +393,7 @@ p{margin:0 0 1.1rem}
   /* Pledges: Bordeaux-Balken links vertikal statt Toplinie */
   .pledge{border-top:0; border-left:3px solid var(--bordeaux); padding:2px 0 2px 18px}
   /* Mobile-Hero: cover + 62% beibehalten, nur vertikal nach unten versetzt (Element-Offset) */
-  .hero__bg{inset:12% 0 0% 0; background:url("../media/hero-header.jpg") 60% center/auto 100% no-repeat}
+  .hero__bg{inset:12% 0 0% 0; background:url("../media/hero-header.jpg") 63% center/auto 100% no-repeat}
   .hero::after{background:linear-gradient(210deg,rgba(13,25,49,0) 0%,rgba(13,25,49,.12) 40%,rgba(13,25,49,.8) 60%,var(--navy) 95%)}
   .hero__inner{align-items:flex-end; min-height:92vh; padding:calc(var(--nav-h) + 24px) var(--pad-x) 60px}
   .hero__col,.hero__sub{max-width:none}
