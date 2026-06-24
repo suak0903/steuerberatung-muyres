@@ -107,7 +107,7 @@ p{margin:0 0 1.1rem}
 .nav.scrolled .btn--outline:hover{background:var(--bordeaux); color:#fff}
 .nav.scrolled .nav__burger span{background:var(--navy)}
 /* Kontakt-Button + transparenter Header bei offenem Mobile-Menue */
-.nav__mcontact{display:none; align-items:center; margin-left:auto; padding:6px 16px; transform:translateY(-5px);
+.nav__mcontact{display:none; align-items:center; margin-left:auto; padding:6px 10px; transform:translateY(-5px);
   border:1px solid rgba(255,255,255,.5); color:#fff; font-family:var(--font); font-weight:500;
   font-size:.9rem; line-height:1.2; transition:.2s var(--ease)}
 .nav__mcontact:hover{background:rgba(255,255,255,.14); color:#fff; border-color:rgba(255,255,255,.7)}
@@ -115,16 +115,19 @@ p{margin:0 0 1.1rem}
 .nav.menu-open .logo-light{display:block}
 .nav.menu-open .logo-dark{display:none}
 .nav.menu-open .nav__burger span{background:#fff}
-.nav.menu-open .nav__burger{margin-left:16px}
+.nav.menu-open .nav__burger{margin-left:0}
+/* enge, einheitliche Abstaende bei offenem Menue, damit alles passt + X ueber dem Hamburger bleibt */
+.nav.menu-open .nav__inner{gap:6px; padding-inline:12px}
+.nav.menu-open .nav__logo img{height:46px}
 /* Social-Icons im Header, nur bei offenem Menue (links neben dem Kontakt-Button) */
 .nav__msocial{display:none}
-.nav.menu-open .nav__msocial{display:inline-flex; gap:8px; align-items:center; margin-left:auto; transform:translateY(-5px)}
-.nav.menu-open .nav__mcontact{margin-left:10px}
-.nav__msocial a{width:34px; height:34px; border:1px solid rgba(255,255,255,.5); display:flex; align-items:center; justify-content:center; color:#fff; transition:.2s var(--ease)}
+.nav.menu-open .nav__msocial{display:inline-flex; gap:5px; align-items:center; margin-left:auto; transform:translateY(-5px)}
+.nav.menu-open .nav__mcontact{margin-left:0}
+.nav__msocial a{width:30px; height:30px; border:1px solid rgba(255,255,255,.5); display:flex; align-items:center; justify-content:center; color:#fff; transition:.2s var(--ease)}
 .nav__msocial a:hover{background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.7)}
 .nav__msocial svg{width:16px; height:16px; fill:currentColor}
-/* sehr schmale Screens: Social-Icons weglassen, damit Kontakt-Button + Burger passen */
-@media(max-width:389px){.nav.menu-open .nav__msocial{display:none}}
+/* nur sehr kleine Geraete: Social-Icons weglassen, damit Kontakt-Button + Burger passen */
+@media(max-width:339px){.nav.menu-open .nav__msocial{display:none}}
 
 /* ---------- Mobile menu (Panel unter dem Header, ~90% deckend, bis Kontakt) ---------- */
 .mmenu{position:fixed; top:0; left:0; right:0; z-index:130; color:#fff;
@@ -261,7 +264,14 @@ p{margin:0 0 1.1rem}
   background-position:center; background-size:cover; background-repeat:no-repeat; will-change:transform}
 .subhero::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,var(--navy) 0%,rgba(13,25,49,.9) 32%,rgba(13,25,49,.56) 64%,rgba(13,25,49,.34) 100%)}
 .subhero .container{position:relative; z-index:2; width:100%}
-@media(max-width:760px){.subhero{min-height:565px}}
+@media(max-width:760px){
+  .subhero{min-height:565px; align-items:flex-start}   /* Hero-HOEHE mobil; Text oben statt unten */
+  .subhero__bg{                         /* Hero-BILD nur mobil justieren: */
+    background-position:55%;         /* X (1. Wert) / Y (2. Wert), z.B. 70% 30% */
+    background-size:auto 100%;              /* GROESSE, z.B. auto 135% statt cover */
+    top:0%; height:100%;               /* PARALLAX-Ueberhang, z.B. -14% / 128% */
+  }
+}
 .subhero .crumb{max-width:none; font-size:.8rem; color:rgba(255,255,255,.62); margin-bottom:16px; line-height:1.8}
 .subhero .crumb a{color:rgba(255,255,255,.78); transition:color .2s var(--ease)}
 .subhero .crumb a:hover{color:#fff}
@@ -383,7 +393,7 @@ p{margin:0 0 1.1rem}
   /* Pledges: Bordeaux-Balken links vertikal statt Toplinie */
   .pledge{border-top:0; border-left:3px solid var(--bordeaux); padding:2px 0 2px 18px}
   /* Mobile-Hero: cover + 62% beibehalten, nur vertikal nach unten versetzt (Element-Offset) */
-  .hero__bg{inset:12% 0 0% 0; background:url("../media/hero-header.jpg") 62% center/auto 115% no-repeat}
+  .hero__bg{inset:12% 0 0% 0; background:url("../media/hero-header.jpg") 68% center/auto 110% no-repeat}
   .hero::after{background:linear-gradient(210deg,rgba(13,25,49,0) 0%,rgba(13,25,49,.12) 40%,rgba(13,25,49,.8) 60%,var(--navy) 95%)}
   .hero__inner{align-items:flex-end; min-height:92vh; padding:calc(var(--nav-h) + 24px) var(--pad-x) 60px}
   .hero__col,.hero__sub{max-width:none}
