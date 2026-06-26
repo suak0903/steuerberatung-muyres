@@ -72,7 +72,7 @@
   }
   function showCookie() { if (cookie) cookie.classList.remove("hidden"); }
   function hideCookie() { if (cookie) cookie.classList.add("hidden"); }
-  function decideCookie(val) { store("muyres_cookie", val); hideCookie(); setTimeout(showDemo, 280); }
+  function decideCookie(val) { store("muyres_cookie", val); hideCookie(); setTimeout(showDemo, 280); if (val === "all") loadMap(); }
 
   if (read("muyres_cookie")) {
     showDemo();
@@ -84,6 +84,21 @@
   if (cookieReopen) cookieReopen.addEventListener("click", function (e) { e.preventDefault(); showCookie(); });
   if (democlose && demobar) democlose.addEventListener("click", function () {
     demobar.classList.add("hidden"); sstore("muyres_demo_hidden", "1");
+  });
+
+  /* ---- Google-Maps consent-gated: iframe laedt erst nach Einwilligung (Klick oder Cookie "alle") ---- */
+  var mapFrame = document.getElementById("mapFrame");
+  var mapConsent = document.getElementById("mapConsent");
+  var mapLoadBtn = document.getElementById("mapLoad");
+  var mapRemember = document.getElementById("mapRemember");
+  function loadMap() {
+    if (mapFrame && mapFrame.dataset.src && !mapFrame.src) mapFrame.src = mapFrame.dataset.src;
+    if (mapConsent) mapConsent.hidden = true;
+  }
+  if (read("muyres_cookie") === "all" || read("muyres_map") === "1") loadMap();
+  if (mapLoadBtn) mapLoadBtn.addEventListener("click", function () {
+    if (mapRemember && mapRemember.checked) store("muyres_map", "1");
+    loadMap();
   });
 
   /* ---- Kontakt-Ribbon: immer schiebbar, Auto-Lauf NUR mobil ---- */

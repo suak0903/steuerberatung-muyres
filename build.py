@@ -10,7 +10,7 @@ import os, io, json
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "47"
+VER = "48"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -409,9 +409,17 @@ kc += ('  <section class="section">\n    <div class="container">\n      <div cla
 '          <label>Nachricht<textarea name="nachricht" rows="4"></textarea></label>\n'
 '          <button class="btn btn--primary" type="submit">Absenden</button>\n        </form>\n      </div>\n    </div>\n  </section>\n')
 kc += faq_section(FAQ_DATA)
+# Google-Maps consent-gated (TTDSG): iframe laedt erst nach Einwilligung (Klick oder Cookie "alle").
 kc += ('  <section class="mapwrap" aria-label="Standort">\n'
-'    <iframe title="Standort der Steuerberatung Muyres, Beethovenstraße 55, Mönchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"\n'
-'      src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>\n  </section>\n')
+'    <div class="mapconsent" id="mapConsent">\n'
+'      <div class="mapconsent__box">\n'
+'        <p class="mapconsent__t">Standort auf Google Maps</p>\n'
+'        <p class="mapconsent__d">Beim Laden der Karte werden Daten an Google übertragen. Näheres in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>\n'
+'        <button class="btn btn--primary" id="mapLoad" type="button">Karte laden</button>\n'
+'        <label class="mapconsent__remember"><input type="checkbox" id="mapRemember"> Künftig automatisch laden</label>\n'
+'      </div>\n    </div>\n'
+'    <iframe id="mapFrame" title="Standort der Steuerberatung Muyres, Beethovenstraße 55, Mönchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"\n'
+'      data-src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>\n  </section>\n')
 write("kontakt", "Kontakt", "Kontakt zur Steuerberatung Muyres in Mönchengladbach: Telefon, E-Mail, Anschrift und Bürozeiten.", "kontakt", kc, "kontakt")
 
 # ---------------- Steuerberaterwechsel ----------------

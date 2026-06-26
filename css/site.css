@@ -302,9 +302,18 @@ p{margin:0 0 1.1rem}
   -webkit-mask-size:contain; mask-size:contain}
 
 /* Google-Maps (Kontakt, unten) */
-.mapwrap{margin-top:0}
+.mapwrap{margin-top:0; position:relative; background:var(--mist)}
 .mapwrap iframe{display:block; width:100%; height:420px; border:0; filter:grayscale(.2) contrast(1.02)}
 @media(max-width:760px){.mapwrap iframe{height:320px}}
+/* Consent-Gate: Platzhalter ueber der Karte, bis der Nutzer zustimmt (TTDSG) */
+.mapconsent{position:absolute; inset:0; z-index:2; display:flex; align-items:center; justify-content:center;
+  padding:24px; background:var(--navy); color:#fff; text-align:center}
+.mapconsent[hidden]{display:none}
+.mapconsent__box{max-width:460px}
+.mapconsent__t{font-weight:600; font-size:1.2rem; color:#fff; margin:0 0 8px}
+.mapconsent__d{color:rgba(255,255,255,.72); font-size:.95rem; line-height:1.6; margin:0 0 20px}
+.mapconsent__d a{color:var(--sky)}
+.mapconsent__remember{display:inline-flex; align-items:center; gap:8px; margin-top:16px; font-size:.85rem; color:rgba(255,255,255,.7); cursor:pointer}
 
 /* ---------- Cookie-Banner (halbtransparent, Muyres-Farben) ---------- */
 .cookie{position:fixed; left:16px; right:16px; bottom:16px; z-index:96; max-width:760px; margin-inline:auto;

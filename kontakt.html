@@ -27,7 +27,7 @@
 <script>document.documentElement.className=document.documentElement.className.replace('no-js','has-js');</script>
 <link rel="preload" href="font/archivo-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="font/archivo-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=47">
+<link rel="stylesheet" href="css/site.css?v=48">
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -110,8 +110,16 @@
     </div>
   </section>
   <section class="mapwrap" aria-label="Standort">
-    <iframe title="Standort der Steuerberatung Muyres, Beethovenstraße 55, Mönchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-      src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>
+    <div class="mapconsent" id="mapConsent">
+      <div class="mapconsent__box">
+        <p class="mapconsent__t">Standort auf Google Maps</p>
+        <p class="mapconsent__d">Beim Laden der Karte werden Daten an Google übertragen. Näheres in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+        <button class="btn btn--primary" id="mapLoad" type="button">Karte laden</button>
+        <label class="mapconsent__remember"><input type="checkbox" id="mapRemember"> Künftig automatisch laden</label>
+      </div>
+    </div>
+    <iframe id="mapFrame" title="Standort der Steuerberatung Muyres, Beethovenstraße 55, Mönchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      data-src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>
   </section>
 
 </main>
@@ -169,6 +177,6 @@
   <button class="demobar__close" id="democlose" aria-label="Hinweis schließen">&times;</button>
 </div>
 
-<script src="js/site.js?v=47"></script>
+<script src="js/site.js?v=48"></script>
 </body>
 </html>
