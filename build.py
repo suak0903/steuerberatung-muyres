@@ -5,12 +5,12 @@ Erzeugt alle Subpages mit gemeinsamem Chrome (Nav/Menü/Footer/Cookie/Demo ident
 zur Startseite) + SEO/GEO (Meta, OG, Twitter, JSON-LD) + robots.txt/sitemap.xml/llms.txt.
 index.html wird NICHT angefasst (Handarbeit). UTF-8 ohne BOM.
 """
-import os, io
+import os, io, json
 
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "45"
+VER = "46"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -18,15 +18,84 @@ NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("steuerberaterwechsel.html", "Steuerberaterwechsel", "steuerberaterwechsel"),
        ("karriere.html", "Karriere", "karriere")]
 
-JSONLD = ('<script type="application/ld+json">{"@context":"https://schema.org",'
-          '"@type":"AccountingService","name":"Steuerberatung Muyres",'
-          '"image":"%s/media/og-muyres.jpg","@id":"%s/#kanzlei",'
-          '"url":"%s/","telephone":"+4921614950780",'
-          '"email":"info@steuerberatung-muyres.de",'
-          '"address":{"@type":"PostalAddress","streetAddress":"Beethovenstraße 55",'
-          '"postalCode":"41061","addressLocality":"Mönchengladbach","addressCountry":"DE"},'
-          '"areaServed":"Mönchengladbach","founder":{"@type":"Person","name":"Michael Muyres"},'
-          '"openingHours":["Mo-Th 08:30-12:30","Mo-Th 13:30-16:30","Fr 08:30-13:00"]}</script>') % (ORIG, ORIG, ORIG)
+# ---------------- Structured Data (JSON-LD @graph) ----------------
+# Lokales SEO + GEO fuer Steuerberater: vollstaendige NAP, Oeffnungszeiten, Leistungskatalog,
+# Team, Mitgliedschaft, Social-Profile. KEINE Geo-Koordinaten (Google geocodiert selbst).
+_KANZLEI_ID = ORIG + "/#kanzlei"
+_TEAM_LD = [
+    ("Peter Muyres", "Steuerberater"),
+    ("Doris Franke", "Steuerfachangestellte"),
+    ("Claudia Wassenberg", "Steuerfachangestellte"),
+    ("Ingrid Wolff", "Steuerfachangestellte"),
+    ("Ulrike Rautenberger", "Steuerfachwirtin, Bilanzbuchhalterin"),
+]
+_SVC_LD = [
+    ("Steuerberatung für Unternehmen", "fachgebiete-unternehmen", "Jahresabschluss, Lohnbuchhaltung, betriebliche Steuererklärung und Unternehmensnachfolge."),
+    ("Steuerberatung für Privatpersonen", "fachgebiete-privatpersonen", "Einkommensteuererklärung, Prüfung von Steuerbescheiden und Vermögensübertragung."),
+    ("Beratung für Existenzgründer und Startups", "fachgebiete-existenzgruender", "Businessplan, Rechtsformwahl, Fördergelder und Liquiditätsplanung."),
+    ("Steuerberatung für Freiberufler und Freelancer", "fachgebiete-freiberufler", "Gewinnermittlung, Finanzbuchführung und betriebliche Steuererklärung."),
+    ("Steuerberatung für Immobilienbesitzer", "fachgebiete-immobilienbesitzer", "Grundsteuererklärung, Vermietung und Verpachtung, Bewertung und Vermögensübertragung."),
+]
+ORG = {
+    "@type": ["AccountingService", "ProfessionalService", "LocalBusiness"],
+    "@id": _KANZLEI_ID,
+    "name": "Steuerberatung Muyres",
+    "alternateName": "Michael Muyres Steuerberatung",
+    "slogan": "Freundlich. Professionell. Nah.",
+    "description": "Persönliche Steuerberatung in Mönchengladbach: Einkommensteuer, Jahresabschluss, Lohnbuchhaltung, Grundsteuer und Existenzgründung. Gegründet 2020, direkt am Bunten Garten an der Beethovenstraße.",
+    "url": ORIG + "/",
+    "image": PAGES + "/media/og-muyres.jpg",
+    "logo": PAGES + "/media/logo.svg",
+    "telephone": "+4921614950780",
+    "faxNumber": "+4921614950789",
+    "email": "info@steuerberatung-muyres.de",
+    "priceRange": "$$",
+    "currenciesAccepted": "EUR",
+    "foundingDate": "2020",
+    "address": {"@type": "PostalAddress", "streetAddress": "Beethovenstraße 55", "postalCode": "41061",
+                "addressLocality": "Mönchengladbach", "addressRegion": "Nordrhein-Westfalen", "addressCountry": "DE"},
+    "areaServed": [{"@type": "City", "name": n} for n in
+                   ["Mönchengladbach", "Korschenbroich", "Viersen", "Willich", "Jüchen", "Neuss"]],
+    "openingHoursSpecification": [
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "08:30", "closes": "12:30"},
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "13:30", "closes": "16:30"},
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "08:30", "closes": "13:00"},
+    ],
+    "knowsAbout": ["Einkommensteuererklärung", "Jahresabschluss", "Lohnbuchhaltung", "Finanzbuchführung",
+                   "Grundsteuererklärung", "Unternehmensnachfolge", "Existenzgründung", "Rechtsformwahl",
+                   "Vermögensübertragung", "Steuerberaterwechsel", "DATEV"],
+    "knowsLanguage": "de",
+    "memberOf": {"@type": "Organization", "name": "Steuerberaterkammer Düsseldorf"},
+    "founder": {"@type": "Person", "@id": ORIG + "/#michael-muyres", "name": "Michael Muyres",
+                "jobTitle": "Steuerberater B.A.", "worksFor": {"@id": _KANZLEI_ID}},
+    "employee": [{"@type": "Person", "name": n, "jobTitle": r, "worksFor": {"@id": _KANZLEI_ID}} for n, r in _TEAM_LD],
+    "sameAs": ["https://www.xing.com/pages/steuerberatung-muyres",
+               "https://www.linkedin.com/company/steuerberatung-muyres/"],
+    "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Leistungen der Steuerberatung Muyres",
+        "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": n,
+            "url": ORIG + "/" + s + "/", "description": d, "provider": {"@id": _KANZLEI_ID}}} for n, s, d in _SVC_LD]},
+}
+WEBSITE = {"@type": "WebSite", "@id": ORIG + "/#website", "url": ORIG + "/",
+           "name": "Steuerberatung Muyres", "inLanguage": "de-DE", "publisher": {"@id": _KANZLEI_ID}}
+
+
+def jsonld(title, desc, canon, slug, og):
+    page = {"@type": "WebPage", "@id": canon + "#webpage", "url": canon,
+            "name": title + " | Steuerberatung Muyres", "description": desc,
+            "isPartOf": {"@id": ORIG + "/#website"}, "about": {"@id": _KANZLEI_ID},
+            "primaryImageOfPage": PAGES + "/media/og-" + og + ".jpg", "inLanguage": "de-DE"}
+    graph = [ORG, WEBSITE, page]
+    if slug:  # Breadcrumb auf allen Unterseiten (nicht Startseite)
+        items = [{"@type": "ListItem", "position": 1, "name": "Start", "item": ORIG + "/"}]
+        if slug.startswith("fachgebiete-"):
+            items.append({"@type": "ListItem", "position": 2, "name": "Fachgebiete", "item": ORIG + "/fachgebiete/"})
+            items.append({"@type": "ListItem", "position": 3, "name": title, "item": canon})
+        else:
+            items.append({"@type": "ListItem", "position": 2, "name": title, "item": canon})
+        page["breadcrumb"] = {"@id": canon + "#breadcrumb"}
+        graph.append({"@type": "BreadcrumbList", "@id": canon + "#breadcrumb", "itemListElement": items})
+    data = {"@context": "https://schema.org", "@graph": graph}
+    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + '</script>'
 
 
 MSOCIAL = (
@@ -63,7 +132,7 @@ def head(title, desc, slug, og="muyres"):
         '<meta name="twitter:title" content="' + title + ' | Steuerberatung Muyres">\n'
         '<meta name="twitter:description" content="' + desc + '">\n'
         '<meta name="twitter:image" content="' + ogimg + '">\n'
-        + JSONLD + '\n'
+        + jsonld(title, desc, canon, slug, og) + '\n'
         '<script>document.documentElement.className=document.documentElement.className.replace(\'no-js\',\'has-js\');</script>\n'
         '<link rel="preload" href="font/archivo-700.woff2" as="font" type="font/woff2" crossorigin>\n'
         '<link rel="preload" href="font/archivo-400.woff2" as="font" type="font/woff2" crossorigin>\n'
@@ -415,7 +484,11 @@ llms = ("# Steuerberatung Muyres\n\n"
 "- Existenzgründer und Startups: Businessplan, Rechtsformwahl, Fördergelder\n"
 "- Freiberufler und Freelancer: Gewinnermittlung, Finanzbuchführung\n"
 "- Immobilienbesitzer: Grundsteuererklärung, Vermietung und Verpachtung, Bewertung\n\n"
-"## Kontakt\n- Adresse: Beethovenstraße 55, 41061 Mönchengladbach\n- Telefon: 02161 / 49 50 78 - 0\n- E-Mail: info@steuerberatung-muyres.de\n"
+"## Team\n- Michael Muyres: Steuerberater B.A., Gründer\n- Peter Muyres: Steuerberater\n- Doris Franke, Claudia Wassenberg, Ingrid Wolff: Steuerfachangestellte\n- Ulrike Rautenberger: Steuerfachwirtin, Bilanzbuchhalterin\n\n"
+"## Mitgliedschaften und Partner\n- Steuerberaterkammer Düsseldorf\n- DATEV Digitale Kanzlei 2022\n- Kooperationspartner: Steuerbüro Lars Neumann (Düsseldorf)\n\n"
+"## Einzugsgebiet\nMönchengladbach und Umgebung (Korschenbroich, Viersen, Willich, Jüchen, Neuss).\n\n"
+"## Steuerberaterwechsel\nEin Wechsel zu uns ist unkompliziert: Wir übernehmen die Kommunikation mit dem bisherigen Berater und das Anfordern der Unterlagen.\n\n"
+"## Kontakt\n- Adresse: Beethovenstraße 55, 41061 Mönchengladbach\n- Telefon: 02161 / 49 50 78 - 0\n- Telefax: 02161 / 49 50 78 - 9\n- E-Mail: info@steuerberatung-muyres.de\n"
 "- Bürozeiten: Mo-Do 8:30-12:30 und 13:30-16:30 Uhr, Fr 8:30-13:00 Uhr\n\n"
 "## Erstgespräch\nKostenfreies Erstgespräch als Telefonberatung, Onlinecoaching oder Termin vor Ort.\n")
 with io.open(os.path.join(PROJ, "llms.txt"), "w", encoding="utf-8", newline="\n") as f:
