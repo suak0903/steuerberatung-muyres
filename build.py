@@ -10,7 +10,7 @@ import os, io, json
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "46"
+VER = "47"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -78,6 +78,24 @@ ORG = {
 WEBSITE = {"@type": "WebSite", "@id": ORIG + "/#website", "url": ORIG + "/",
            "name": "Steuerberatung Muyres", "inLanguage": "de-DE", "publisher": {"@id": _KANZLEI_ID}}
 
+# FAQ: eine Quelle fuer sichtbare Sektion (faq_section) UND FAQPage-Schema (wortgleich).
+# Faktentreu aus den Seiteninhalten abgeleitet.
+FAQ_DATA = [
+    ("Was kostet ein Erstgespräch?",
+     "Das Erstgespräch ist kostenfrei. Sie können es als Telefonberatung, als Onlinecoaching oder als persönlichen Termin vor Ort wahrnehmen."),
+    ("Für wen ist die Steuerberatung Muyres da?",
+     "Wir beraten Unternehmen, Privatpersonen, Existenzgründer und Startups, Freiberufler und Freelancer sowie Immobilienbesitzer."),
+    ("Wie läuft ein Steuerberaterwechsel ab?",
+     "Ein Wechsel zu uns ist unkompliziert. Sie kündigen Ihrem bisherigen Berater, wir übernehmen auf Wunsch die weitere Kommunikation und das Anfordern Ihrer Unterlagen."),
+    ("Arbeiten Sie digital?",
+     "Ja. Als DATEV Digitale Kanzlei bieten wir digitale Zusammenarbeit, Onlinecoaching und ortsunabhängige Beratung."),
+    ("Wo finde ich die Kanzlei?",
+     "Unsere Kanzlei liegt am Bunten Garten an der Beethovenstraße 55 in 41061 Mönchengladbach."),
+    ("Welche Bürozeiten haben Sie?",
+     "Montag bis Donnerstag von 8:30 bis 12:30 Uhr und von 13:30 bis 16:30 Uhr, freitags von 8:30 bis 13:00 Uhr."),
+]
+FAQ_BY_SLUG = {"kontakt": FAQ_DATA}
+
 
 def jsonld(title, desc, canon, slug, og):
     page = {"@type": "WebPage", "@id": canon + "#webpage", "url": canon,
@@ -94,6 +112,10 @@ def jsonld(title, desc, canon, slug, og):
             items.append({"@type": "ListItem", "position": 2, "name": title, "item": canon})
         page["breadcrumb"] = {"@id": canon + "#breadcrumb"}
         graph.append({"@type": "BreadcrumbList", "@id": canon + "#breadcrumb", "itemListElement": items})
+    if slug in FAQ_BY_SLUG:  # FAQPage wortgleich zur sichtbaren FAQ-Sektion
+        graph.append({"@type": "FAQPage", "@id": canon + "#faq", "isPartOf": {"@id": canon + "#webpage"},
+            "mainEntity": [{"@type": "Question", "name": q,
+                "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ_BY_SLUG[slug]]})
     data = {"@context": "https://schema.org", "@graph": graph}
     return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + '</script>'
 
@@ -260,6 +282,16 @@ def pledges_section():
 '        <div class="pledge"><h3>Service über den Tellerrand hinaus</h3></div>\n      </div>\n    </div>\n  </section>\n')
 
 
+def faq_section(items, eyebrow="Häufige Fragen", h2="Gut zu wissen."):
+    c = '  <section class="section section--stone">\n    <div class="container">\n'
+    c += '      <div class="section-intro reveal"><p class="eyebrow">' + eyebrow + '</p><h2 class="h2">' + h2 + '</h2></div>\n'
+    c += '      <div class="faq reveal">\n'
+    for q, a in items:
+        c += '        <details class="faq__item"><summary>' + q + '</summary><div class="faq__a"><p>' + a + '</p></div></details>\n'
+    c += '      </div>\n    </div>\n  </section>\n'
+    return c
+
+
 def write(slug, title, desc, active, body, og="muyres"):
     full = head(title, desc, slug if slug != "index" else "", og) + nav(active) + body + '\n</main>\n\n' + FOOTER + TAIL
     path = os.path.join(PROJ, slug + ".html")
@@ -376,6 +408,7 @@ kc += ('  <section class="section">\n    <div class="container">\n      <div cla
 '          <label>E-Mail<input type="email" name="email" autocomplete="email"></label>\n'
 '          <label>Nachricht<textarea name="nachricht" rows="4"></textarea></label>\n'
 '          <button class="btn btn--primary" type="submit">Absenden</button>\n        </form>\n      </div>\n    </div>\n  </section>\n')
+kc += faq_section(FAQ_DATA)
 kc += ('  <section class="mapwrap" aria-label="Standort">\n'
 '    <iframe title="Standort der Steuerberatung Muyres, Beethovenstraße 55, Mönchengladbach" loading="lazy" referrerpolicy="no-referrer-when-downgrade"\n'
 '      src="https://maps.google.com/maps?q=Beethovenstra%C3%9Fe%2055%2C%2041061%20M%C3%B6nchengladbach&output=embed"></iframe>\n  </section>\n')
