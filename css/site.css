@@ -439,3 +439,66 @@ p{margin:0 0 1.1rem}
 @media (hover:none),(pointer:coarse){
   .field:hover{box-shadow:none; border-color:var(--line)}
 }
+
+/* ============ "Ueber diesen Entwurf": Argumentationsseite ============ */
+.section--tight{padding-block:44px 0}
+.disclaimer{border:1px solid var(--line); border-left:3px solid var(--bordeaux); background:var(--stone); padding:22px 26px}
+.disclaimer__t{font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--bordeaux); margin:0 0 8px}
+.disclaimer p:last-child{margin:0; color:var(--ink); font-size:.98rem; line-height:1.65}
+
+.statband{display:grid; grid-template-columns:auto 1fr; gap:44px; align-items:center; margin-bottom:48px}
+.statband__num{font-size:clamp(4.6rem,3rem + 8vw,8rem); font-weight:700; line-height:.85; color:var(--navy); letter-spacing:-.04em}
+.statband__num span{color:var(--bordeaux); font-size:.46em; vertical-align:super; margin-left:3px; letter-spacing:0}
+.statband__claim{max-width:62ch}
+.statband__claim .h2{margin:6px 0 12px}
+
+.twocol{display:grid; grid-template-columns:1fr 1fr; gap:26px}
+.panel{border:1px solid var(--line); padding:30px}
+.panel h3{font-size:1.15rem; margin:0 0 18px; color:var(--navy)}
+.ck,.td{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:13px}
+.ck li,.td li{position:relative; padding-left:30px; line-height:1.5; color:var(--ink); font-size:.97rem}
+.ck li::before{content:"\2713"; position:absolute; left:0; top:-1px; color:var(--bordeaux); font-weight:700}
+.td li::before{content:"\2192"; position:absolute; left:0; top:0; color:var(--muted)}
+
+.comptable{border:1px solid var(--line); margin-bottom:42px}
+.comptable__head,.comptable__row{display:grid; grid-template-columns:minmax(0,1fr) 150px 150px}
+.comptable__head{background:var(--navy); color:#fff}
+.comptable__head span{padding:14px 18px; font-weight:600; font-size:.8rem; text-transform:uppercase; letter-spacing:.06em}
+.comptable__row{border-top:1px solid var(--line)}
+.comptable__row:nth-child(odd){background:var(--stone)}
+.comptable__row span{padding:14px 18px; font-size:.96rem; display:flex; align-items:center}
+.comptable__head span:not(:first-child),.comptable__row span:not(.comptable__l){justify-content:center; text-align:center}
+.comptable__l{font-weight:500; color:var(--navy)}
+.comptable .yes{color:var(--bordeaux); font-weight:700}
+.comptable .no{color:var(--muted)}
+.comptable .txt{font-size:.84rem; color:var(--muted)}
+
+.geobox{background:var(--navy); color:#fff; padding:44px}
+.geobox .eyebrow{color:var(--sky)}
+.geobox h3{color:#fff; font-size:1.55rem; margin:0 0 14px; letter-spacing:-.02em}
+.geobox p{color:rgba(255,255,255,.82); margin:0; max-width:76ch; font-weight:300}
+
+.reflist{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+.refcard{display:flex; flex-direction:column; border:1px solid var(--line); background:var(--paper); color:var(--ink); transition:border-color .2s var(--ease)}
+.refcard:hover{border-color:var(--navy)}
+.refcard__shot{display:block; overflow:hidden; border-bottom:1px solid var(--line)}
+.refcard__shot img{display:block; width:100%; height:auto; transition:transform .45s var(--ease)}
+.refcard:hover .refcard__shot img{transform:scale(1.04)}
+.refcard__body{display:flex; flex-direction:column; gap:7px; padding:22px}
+.refcard__t{font-weight:600; font-size:1.12rem; color:var(--navy)}
+.refcard__d{font-size:.92rem; color:var(--muted); line-height:1.5; flex:1}
+.refcard__link{font-weight:600; font-size:.88rem; color:var(--bordeaux); margin-top:8px}
+.refcard__link::after{content:" \2192"}
+
+@media(max-width:900px){.reflist{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){
+  .statband{grid-template-columns:1fr; gap:10px; margin-bottom:36px}
+  .twocol{grid-template-columns:1fr}
+  .geobox{padding:28px}
+  .comptable__head,.comptable__row{grid-template-columns:minmax(0,1fr) 54px 54px}
+  .comptable__row span{padding:11px 8px; font-size:.84rem}
+  .comptable__head span{font-size:.58rem; letter-spacing:.02em; padding:10px 6px}
+  .comptable__l{min-width:0; overflow-wrap:anywhere}
+  .statband__num{min-width:0}
+}
+@media(max-width:560px){.reflist{grid-template-columns:1fr}}

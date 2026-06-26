@@ -10,7 +10,7 @@ import os, io, json
 PROJ = os.path.dirname(os.path.abspath(__file__))
 ORIG = "https://www.steuerberatung-muyres.de"
 PAGES = "https://suak0903.github.io/steuerberatung-muyres"
-VER = "48"
+VER = "50"
 
 NAV = [("kanzlei.html", "Kanzlei", "kanzlei"),
        ("fachgebiete.html", "Fachgebiete", "fachgebiete"),
@@ -484,12 +484,99 @@ write("datenschutz", "Datenschutz", "Datenschutzhinweise dieses statischen Redes
 # ---------------- Hinweise (Über diesen Entwurf) ----------------
 hw = subhero("Über diesen Entwurf", "Über diesen Entwurf.",
    "Was Sie hier sehen, wie es entstanden ist und was funktioniert.", accent="Entwurf.")
-hw += ('  <section class="section">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
-'        <h2 class="h2">Was ist das?</h2>\n        <p>Ein unverbindlicher Redesign-Entwurf für die Steuerberatung Muyres, erstellt von Dr.-Ing. Suat Akyol. Ziel ist es zu zeigen, wie der bestehende Webauftritt in moderner, klarer Form aussehen könnte. Inhalte und Bilder wurden vom Original übernommen.</p>\n'
-'        <h2 class="h2">Was funktioniert, was nicht</h2>\n'
-'        <p>Navigation, Layout, Animationen und das responsive Verhalten sind voll funktionsfähig. Das Kontaktformular versendet keine Daten, Datei-Downloads sind nicht hinterlegt, und externe Links öffnen über eine Zwischenseite.</p>\n'
-'        <h2 class="h2">Kontakt</h2>\n        <p>Anmerkungen gerne an Dr.-Ing. Suat Akyol, contact@akyol.de.</p>\n      </div>\n    </div>\n  </section>\n')
-write("hinweise", "Über diesen Entwurf", "Hinweise zum Redesign-Entwurf der Steuerberatung Muyres von Dr.-Ing. Suat Akyol.", "", hw)
+def statband(num, suf, eyebrow, h2, lead):
+    s = '      <div class="statband reveal">\n        <div class="statband__num">' + num
+    if suf:
+        s += '<span>' + suf + '</span>'
+    s += '</div>\n        <div class="statband__claim">\n          <p class="eyebrow">' + eyebrow + '</p>\n'
+    s += '          <h2 class="h2">' + h2 + '</h2>\n          <p class="lead">' + lead + '</p>\n        </div>\n      </div>\n'
+    return s
+
+DONE = [
+    "Vollständiges, individuelles Design, kein Baukasten-Template",
+    "Alle Seiten: Start, Kanzlei, fünf Fachgebiete, Service, Kontakt, Karriere, Steuerberaterwechsel",
+    "Optimiert für Smartphone, Tablet und Desktop",
+    "Foto-Hero mit Animation und modernes Mobilmenü",
+    "Vollständige Suchmaschinen-Daten (SEO) und KI-Suche (GEO)",
+    "Häufige Fragen mit Rich-Results-Auszeichnung",
+    "Rechtssichere Karten-Einbindung, lädt erst nach Zustimmung",
+    "Social-Vorschaubilder, Favicon und schnelle Ladezeiten",
+]
+TODO = [
+    "DATEV-News-Modul echt anbinden (aktuell Platzhalter)",
+    "Kontaktformular an den Mailversand anbinden",
+    "Seite live schalten und für Suchmaschinen freigeben",
+    "Datenschutzerklärung rechtlich finalisieren",
+    "Optional: Redaktionssystem zum Selbst-Pflegen",
+]
+COMP = [
+    ("Korrektes Branchen-Schema (LocalBusiness)", 0, 1),
+    ("Adresse und Öffnungszeiten strukturiert", 0, 1),
+    ("Leistungen als auswertbare Daten", 0, 1),
+    ("Team und Personen hinterlegt", 0, 1),
+    ("Info-Datei für KI-Suche (llms.txt)", 0, 1),
+    ("Frage-Antwort-Auszeichnung (FAQ)", 0, 1),
+    ("Verknüpfung zu Social und Kammer", 0, 1),
+    ("Klick-Pfad maschinenlesbar (Breadcrumb)", 0, 1),
+]
+REFS = [
+    ("ref-akyol", "akyol.de", "Meine eigene Website: Interim Management und Blog.", "https://www.akyol.de"),
+    ("ref-praesi", "KI: gestern, heute, morgen", "Interaktive Online-Keynote, die während des Vortrags live mitarbeitet.", "https://akyol.de/presentations/ki-gestern-heute-morgen/"),
+    ("ref-coreform", "core form", "Pilates-Studio: Kursbuchung, Studios und Ausbildung, CI-konform.", "https://www.core-form.de"),
+    ("ref-ddim", "DDIM-Relaunch", "Relaunch-Demonstrator für den Interim-Management-Verband DDIM.", "https://suak0903.github.io/ddim-relaunch-demonstrator/"),
+    ("ref-cancontrols", "CanControls", "Bildverstehen und Sensorik, Aachen.", "https://suak0903.github.io/cancontrols/"),
+    ("ref-seitec", "Seitec", "Energie- und Sicherheitstechnik aus einer Hand.", "https://suak0903.github.io/seitec/"),
+]
+
+# --- Disclaimer (ganz oben) ---
+hw += ('  <section class="section section--tight">\n    <div class="container">\n'
+'      <div class="disclaimer reveal">\n        <p class="disclaimer__t">Bitte beachten</p>\n'
+'        <p>Diese Seite ist ein <strong>unverbindlicher Entwurf</strong> und <strong>nicht öffentlich auffindbar</strong> (für Suchmaschinen gesperrt). Sie wurde ausschließlich aus <strong>öffentlich verfügbaren Materialien</strong> des bestehenden Webauftritts zusammengestellt, steht in keiner Verbindung zum offiziellen Auftritt der Kanzlei und konkurriert nicht mit dem Original. Auf Wunsch wird sie <strong>jederzeit vollständig entfernt</strong>.</p>\n      </div>\n    </div>\n  </section>\n')
+
+# --- Sektion 1: Status ---
+hw += '  <section class="section">\n    <div class="container">\n'
+hw += statband("85", "%", "Stand der Umsetzung", "Startklar, bis auf die letzte Meile.",
+    "Design, Inhalte, Struktur und die komplette Suchmaschinen-Optimierung sind fertig. Was noch fehlt, sind technische Anbindungen für den Live-Betrieb.")
+hw += '      <div class="twocol reveal">\n        <div class="panel"><h3>Fertig und funktionsfähig</h3>\n          <ul class="ck">\n'
+for it in DONE:
+    hw += '            <li>' + it + '</li>\n'
+hw += '          </ul>\n        </div>\n        <div class="panel"><h3>Für den Live-Betrieb offen</h3>\n          <ul class="td">\n'
+for it in TODO:
+    hw += '            <li>' + it + '</li>\n'
+hw += '          </ul>\n        </div>\n      </div>\n    </div>\n  </section>\n'
+
+# --- Sektion 2: SEO / GEO ---
+hw += '  <section class="section section--stone">\n    <div class="container">\n'
+hw += statband("40", "+", "Auffindbarkeit: SEO und GEO", "Fakten, die Google und KI jetzt verstehen.",
+    "Über 40 strukturierte Angaben (Adresse, Öffnungszeiten, Leistungen, Team, Themen) machen die Kanzlei für Suchmaschinen und KI-Assistenten auswertbar. Die bisherige Seite liefert davon keinen einzigen: ihr einziges Datenobjekt ist ein leeres „Article“.")
+hw += '      <div class="comptable reveal">\n        <div class="comptable__head"><span>Signal für Suchmaschinen</span><span>Bisherige Seite</span><span>Dieser Entwurf</span></div>\n'
+for label, a, b in COMP:
+    def _cell(v):
+        if v == 1: return '<span class="yes">Ja</span>'
+        if v == 0: return '<span class="no">Nein</span>'
+        return '<span class="txt">' + v + '</span>'
+    hw += '        <div class="comptable__row"><span class="comptable__l">' + label + '</span>' + _cell(a) + _cell(b) + '</div>\n'
+hw += '      </div>\n'
+hw += ('      <div class="geobox reveal">\n        <p class="eyebrow">Warum GEO besonders zählt</p>\n'
+'        <h3>Gefunden werden, wo künftig gesucht wird.</h3>\n'
+'        <p>Immer mehr Menschen fragen ChatGPT, Perplexity oder die KI-Übersicht von Google: „Guter Steuerberater in Mönchengladbach?“ Diese Systeme empfehlen nur, was sie strukturiert verstehen. Dieser Entwurf gibt ihnen eine eigene Info-Datei, eine Frage-Antwort-Auszeichnung und klare Themen-Signale. Für die bisherige Seite sind diese Assistenten praktisch blind.</p>\n      </div>\n    </div>\n  </section>\n')
+
+# --- Sektion 3: Referenzen ---
+hw += '  <section class="section">\n    <div class="container">\n'
+hw += statband("6", "", "Referenzen", "Kein Einzelfall: sechs Projekte aus meiner Hand.",
+    "Von der eigenen Website über Kundenprojekte bis zu Relaunch-Demonstratoren, alle mit KI-Unterstützung gebaut.")
+hw += '      <div class="reflist stagger reveal">\n'
+for img, t, d, url in REFS:
+    hw += ('        <a class="refcard" href="' + url + '" target="_blank" rel="noopener">\n'
+           '          <span class="refcard__shot"><img src="media/' + img + '.jpg" alt="Startseite ' + t + '" loading="lazy" width="800" height="500"></span>\n'
+           '          <span class="refcard__body"><span class="refcard__t">' + t + '</span><span class="refcard__d">' + d + '</span><span class="refcard__link">Live ansehen</span></span>\n        </a>\n')
+hw += '      </div>\n    </div>\n  </section>\n'
+
+# --- Abschluss: Demonstrator-Hinweis ---
+hw += ('  <section class="section section--stone">\n    <div class="container">\n      <div class="prose narrow reveal">\n'
+'        <p class="eyebrow">Zum Hintergrund</p>\n        <h2 class="h2">Was ist das hier?</h2>\n'
+'        <p>Ein unverbindlicher Redesign-Entwurf für die Steuerberatung Muyres, erstellt von Dr.-Ing. Suat Akyol. Inhalte und Bilder stammen aus dem bestehenden Auftritt; gezeigt wird, wie er in moderner, klarer und besser auffindbarer Form aussehen kann. Anmerkungen gerne an <a href="mailto:contact@akyol.de">contact@akyol.de</a>.</p>\n      </div>\n    </div>\n  </section>\n')
+write("hinweise", "Über diesen Entwurf", "Status, SEO- und GEO-Analyse und Referenzen zum Redesign-Entwurf der Steuerberatung Muyres von Dr.-Ing. Suat Akyol.", "", hw)
 
 # ---------------- weiter.html (Redirect-Platzhalter) ----------------
 wt = subhero("Externer Link", "Sie verlassen den Entwurf.", "", accent="Entwurf.")
